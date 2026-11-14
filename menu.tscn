@@ -1,0 +1,108 @@
+[gd_scene format=3 uid="uid://xfuqubm5s3ql"]
+
+[ext_resource type="Script" uid="uid://ljb2xv3t755m" path="res://static_body_2d.gd" id="1_0e48y"]
+[ext_resource type="Texture2D" uid="uid://c7p7507kdt0rt" path="res://glow.png" id="2_0hol4"]
+[ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://planet.png" id="2_epypp"]
+[ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://planet_menu.mp3" id="3_epypp"]
+[ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://play button.png" id="5_q6r6c"]
+
+[sub_resource type="Curve" id="Curve_0e48y"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mti6b"]
+radius = 0.01
+
+[sub_resource type="QuadMesh" id="QuadMesh_62yky"]
+
+[sub_resource type="Environment" id="Environment_4kxuq"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_mm1bc"]
+
+[sub_resource type="Compositor" id="Compositor_mti6b"]
+
+[node name="Node2D" type="Node2D" unique_id=58521646]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=179468768]
+offset_left = -60.0
+offset_top = -23.0
+offset_right = 1246.0
+offset_bottom = 675.0
+color = Color(0, 0, 0, 1)
+
+[node name="TextEdit" type="TextEdit" parent="." unique_id=1500383992]
+offset_right = 1156.0
+offset_bottom = 107.0
+text = "Jello"
+
+[node name="Button2" type="Button" parent="." unique_id=258044775]
+offset_left = -1.0
+offset_top = 323.0
+offset_right = 360.0
+offset_bottom = 427.0
+text = "settings"
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=1530533612]
+position = Vector2(-441, -525)
+scale = Vector2(400, 400)
+skew = 0.28797933
+amount = 200
+lifetime = 5.0
+preprocess = 8.41
+randomness = 1.0
+lifetime_randomness = 0.64
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector2(1, 4)
+spread = 180.0
+gravity = Vector2(220, 200)
+angle_min = -488.6
+angle_max = 720.0
+angle_curve = SubResource("Curve_0e48y")
+scale_amount_max = 5.0
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=476771476]
+position = Vector2(606.00006, 344)
+scale = Vector2(400, 400)
+script = ExtResource("1_0e48y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1939815446]
+shape = SubResource("CircleShape2D_mti6b")
+
+[node name="MeshInstance2D2" type="MeshInstance2D" parent="StaticBody2D/CollisionShape2D" unique_id=1184034877]
+position = Vector2(0.012499809, 0.0075000525)
+scale = Vector2(1.4866261, 1.4818069)
+mesh = SubResource("QuadMesh_62yky")
+texture = ExtResource("2_0hol4")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D/CollisionShape2D" unique_id=1007025205]
+position = Vector2(0.012499779, 0.0075000226)
+scale = Vector2(1.4866261, 1.4818069)
+mesh = SubResource("QuadMesh_62yky")
+texture = ExtResource("2_epypp")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1804321585]
+environment = SubResource("Environment_4kxuq")
+camera_attributes = SubResource("CameraAttributesPractical_mm1bc")
+compositor = SubResource("Compositor_mti6b")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1909027303]
+position = Vector2(-441, -525)
+scale = Vector2(400, 400)
+skew = 0.28797925
+stream = ExtResource("3_epypp")
+autoplay = true
+parameters/looping = true
+
+[node name="Button3" type="Button" parent="." unique_id=1865689507]
+offset_left = 435.0
+offset_top = 176.0
+offset_right = 785.0
+offset_bottom = 526.0
+icon = ExtResource("5_q6r6c")
+flat = true
+autowrap_mode = 3
+autowrap_trim_flags = 0
+clip_text = true
+expand_icon = true
