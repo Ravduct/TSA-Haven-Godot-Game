@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="TSA-Haven"
-run/main_scene="uid://dp5xjbnngysre"
+run/main_scene="res://menu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://image assets/icon.svg"
 
