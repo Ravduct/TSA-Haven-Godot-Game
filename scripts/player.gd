@@ -89,13 +89,13 @@ const JIGGLE_SHADER := """
 shader_type canvas_item;
 
 uniform vec2 player_pos = vec2(0.0);
-uniform float dent_radius = 600.0;
-uniform float dent_softness = 0.4;
+uniform float dent_radius = 300.0;
+uniform float dent_softness = 0.9;
 uniform float dent_pull = 0.15;
 uniform float wave_radius = 500.0;
 uniform float press = 0.0;
 uniform float strength = 0.0;
-uniform float frequency = 45.0;
+uniform float frequency = 25.0;
 uniform float push = 25.0;
 
 void vertex() {
