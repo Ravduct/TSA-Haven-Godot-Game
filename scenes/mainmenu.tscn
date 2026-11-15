@@ -21,8 +21,10 @@ radius = 0.01
 [node name="Node2D" type="Node2D" unique_id=58521646]
 
 [node name="background" type="ColorRect" parent="." unique_id=179468768]
-offset_right = 1153.0
-offset_bottom = 663.0
+offset_left = -1.0
+offset_top = -23.0
+offset_right = 2978.0
+offset_bottom = 675.0
 color = Color(0, 0, 0, 1)
 
 [node name="stars" type="CPUParticles2D" parent="." unique_id=1530533612]
@@ -61,15 +63,6 @@ scale = Vector2(1.004, 1)
 mesh = SubResource("QuadMesh_62yky")
 texture = ExtResource("3_h73c4")
 
-[node name="menu music" type="AudioStreamPlayer2D" parent="." unique_id=1909027303]
-position = Vector2(-3.0000305, 1)
-scale = Vector2(400, 400)
-skew = 0.28797925
-stream = ExtResource("4_85riq")
-pitch_scale = 0.6
-autoplay = true
-parameters/looping = true
-
 [node name="settings" type="Button" parent="." unique_id=1180905257]
 offset_left = 752.0
 offset_top = 225.0
@@ -93,6 +86,7 @@ autowrap_mode = 3
 autowrap_trim_flags = 0
 clip_text = true
 expand_icon = true
+script = ExtResource("7_wf3n4")
 
 [node name="play" type="Button" parent="." unique_id=1865689507]
 offset_left = 447.0
@@ -114,3 +108,69 @@ offset_right = 378.0
 offset_bottom = 200.0
 text = "EVIL PURPLE ALIEN STEALS YUOR FRIEND AND DEMANDS POWER SOTNES TO TURN ON YOU AND YOU LWK GOTTA FIGHT HIM"
 fit_content = true
+
+[node name="Credits" type="Node2D" parent="." unique_id=635934664]
+position = Vector2(1734, 24)
+script = ExtResource("10_uui5l")
+
+[node name="background" type="ColorRect" parent="Credits" unique_id=1213165286]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Credits/background" unique_id=287679811]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+bbcode_enabled = true
+text = "[font_size=75]Credits:[/font_size]
+[font_size=30]Kyle Nham (koyle)[/font_size]
+Main Scripter
+
+[font_size=30]Riyad Zahraoui (dum_nub)[/font_size]
+Designer
+Via Effect
+Scripter
+
+[font_size=30]Huu Thang Tu (Ravduct)[/font_size]
+Music Producer
+Scripter"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="cameraNode" type="Node2D" parent="Credits/background" unique_id=195891448]
+
+[node name="backButton" type="Button" parent="Credits/background" unique_id=1432172619]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 34.0
+offset_right = 88.0
+offset_bottom = 65.0
+text = "Back"
+script = ExtResource("10_4hago")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1863579707]
+script = ExtResource("10_h73c4")
+
+[node name="menu music" type="AudioStreamPlayer2D" parent="Camera2D" unique_id=1909027303]
+position = Vector2(-441, -525)
+scale = Vector2(400, 399.99997)
+skew = 0.28797925
+stream = ExtResource("4_85riq")
+pitch_scale = 0.6
+autoplay = true
+parameters/looping = true
+
+[node name="Settings" type="Node2D" parent="." unique_id=838375638]
+position = Vector2(12, 811)
+
+[node name="ColorRect" type="ColorRect" parent="Settings" unique_id=336643738]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)
