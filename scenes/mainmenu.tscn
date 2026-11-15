@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scripts/credits.gd" id="7_wf3n4"]
 [ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
+[ext_resource type="Script" uid="uid://cu4yvmr8d2hwq" path="res://scenes/sfx_volume.gd" id="13_gjjcl"]
 [ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scripts/music_volume.gd" id="14_kait0"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
@@ -150,7 +151,7 @@ position = Vector2(1734, 24)
 [node name="background" type="ColorRect" parent="Credits" unique_id=1213165286]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 0)
+color = Color(0, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Credits/background" unique_id=287679811]
@@ -208,7 +209,7 @@ position = Vector2(0, 811)
 [node name="background" type="ColorRect" parent="Settings" unique_id=336643738]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0.4745098, 0.4745098, 0.4745098, 0)
+color = Color(0.4739583, 0.4739583, 0.4739583, 1)
 
 [node name="cameraNode" type="Node2D" parent="Settings/background" unique_id=1631271310]
 position = Vector2(576, 324)
@@ -253,6 +254,7 @@ text = "[center]Music Volume[/center]"
 
 [node name="sfxVolume" type="Node2D" parent="Settings/background" unique_id=325761545]
 position = Vector2(0, 50)
+script = ExtResource("13_gjjcl")
 
 [node name="volumeSlide" type="HSlider" parent="Settings/background/sfxVolume" unique_id=1234735107]
 offset_left = 476.0
@@ -268,8 +270,7 @@ offset_top = 323.0
 offset_right = 667.0
 offset_bottom = 374.69873
 bbcode_enabled = true
-text = "[center]0.0[/center]
-"
+text = "[center]0.0[/center]"
 
 [node name="title" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=1754087944]
 offset_left = 476.0
