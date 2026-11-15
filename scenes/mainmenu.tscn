@@ -1,17 +1,12 @@
 [gd_scene format=3 uid="uid://dp5xjbnngysre"]
 
-[ext_resource type="Script" path="res://static_body_2d.gd" id="1_85riq"]
 [ext_resource type="Texture2D" uid="uid://c7p7507kdt0rt" path="res://image assets/glow.png" id="2_wf3n4"]
 [ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://image assets/planet.png" id="3_h73c4"]
 [ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://audio/planet_menu.mp3" id="4_85riq"]
 [ext_resource type="Texture2D" uid="uid://b4lwj0hcwkwvy" path="res://image assets/settings.png" id="5_4hago"]
 [ext_resource type="Texture2D" uid="uid://df2a0gm1xymeb" path="res://image assets/CREDITS.png" id="6_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://image assets/play button.png" id="7_kait0"]
-[ext_resource type="Script" path="res://scenes/credits.gd" id="7_wf3n4"]
-[ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://play.gd" id="8_6pj40"]
-[ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scenes/back_button.gd" id="10_4hago"]
-[ext_resource type="Script" path="res://scenes/camera_2d.gd" id="10_h73c4"]
-[ext_resource type="Script" path="res://scenes/credits_node.gd" id="10_uui5l"]
+[ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
 _limits = [-360.0, 360.0, 0.0, 1.0]
@@ -54,7 +49,6 @@ scale_amount_max = 5.0
 [node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
 position = Vector2(576, 345)
 scale = Vector2(400, 400)
-script = ExtResource("1_85riq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="planet" unique_id=1939815446]
 shape = SubResource("CircleShape2D_mti6b")
