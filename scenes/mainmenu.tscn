@@ -1,0 +1,182 @@
+[gd_scene format=3 uid="uid://dp5xjbnngysre"]
+
+[ext_resource type="Script" path="res://static_body_2d.gd" id="1_85riq"]
+[ext_resource type="Texture2D" uid="uid://c7p7507kdt0rt" path="res://image assets/glow.png" id="2_wf3n4"]
+[ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://image assets/planet.png" id="3_h73c4"]
+[ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://audio/planet_menu.mp3" id="4_85riq"]
+[ext_resource type="Texture2D" uid="uid://b4lwj0hcwkwvy" path="res://image assets/settings.png" id="5_4hago"]
+[ext_resource type="Texture2D" uid="uid://df2a0gm1xymeb" path="res://image assets/CREDITS.png" id="6_gjjcl"]
+[ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://image assets/play button.png" id="7_kait0"]
+[ext_resource type="Script" path="res://scenes/credits.gd" id="7_wf3n4"]
+[ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://play.gd" id="8_6pj40"]
+[ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scenes/back_button.gd" id="10_4hago"]
+[ext_resource type="Script" path="res://scenes/camera_2d.gd" id="10_h73c4"]
+[ext_resource type="Script" path="res://scenes/credits_node.gd" id="10_uui5l"]
+
+[sub_resource type="Curve" id="Curve_0e48y"]
+_limits = [-360.0, 360.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mti6b"]
+radius = 0.01
+
+[sub_resource type="QuadMesh" id="QuadMesh_62yky"]
+
+[node name="Node2D" type="Node2D" unique_id=58521646]
+
+[node name="background" type="ColorRect" parent="." unique_id=179468768]
+offset_left = -1.0
+offset_top = -23.0
+offset_right = 2978.0
+offset_bottom = 675.0
+color = Color(0, 0, 0, 1)
+
+[node name="stars" type="CPUParticles2D" parent="." unique_id=1530533612]
+position = Vector2(-441, -525)
+scale = Vector2(400, 400)
+skew = 0.28797933
+amount = 200
+lifetime = 5.0
+preprocess = 8.41
+randomness = 1.0
+lifetime_randomness = 0.64
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector2(1, 4)
+spread = 180.0
+gravity = Vector2(220, 200)
+angle_min = -488.6
+angle_max = 720.0
+angle_curve = SubResource("Curve_0e48y")
+scale_amount_max = 5.0
+
+[node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
+position = Vector2(576, 345)
+scale = Vector2(400, 400)
+script = ExtResource("1_85riq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="planet" unique_id=1939815446]
+shape = SubResource("CircleShape2D_mti6b")
+
+[node name="MeshInstance2D2" type="MeshInstance2D" parent="planet/CollisionShape2D" unique_id=1184034877]
+scale = Vector2(1.003, 1)
+mesh = SubResource("QuadMesh_62yky")
+texture = ExtResource("2_wf3n4")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="planet/CollisionShape2D" unique_id=1007025205]
+scale = Vector2(1.004, 1)
+mesh = SubResource("QuadMesh_62yky")
+texture = ExtResource("3_h73c4")
+
+[node name="settings" type="Button" parent="." unique_id=1180905257]
+offset_left = 752.0
+offset_top = 225.0
+offset_right = 979.0
+offset_bottom = 452.0
+icon = ExtResource("5_4hago")
+flat = true
+autowrap_mode = 3
+autowrap_trim_flags = 0
+clip_text = true
+expand_icon = true
+
+[node name="credits" type="Button" parent="." unique_id=535208277]
+offset_left = 172.0
+offset_top = 225.0
+offset_right = 399.0
+offset_bottom = 452.0
+icon = ExtResource("6_gjjcl")
+flat = true
+autowrap_mode = 3
+autowrap_trim_flags = 0
+clip_text = true
+expand_icon = true
+script = ExtResource("7_wf3n4")
+
+[node name="play" type="Button" parent="." unique_id=1865689507]
+offset_left = 447.0
+offset_top = 219.0
+offset_right = 576.0
+offset_bottom = 346.5
+scale = Vector2(2, 2)
+size_flags_stretch_ratio = 0.0
+icon = ExtResource("7_kait0")
+flat = true
+autowrap_mode = 3
+autowrap_trim_flags = 0
+clip_text = true
+expand_icon = true
+script = ExtResource("8_6pj40")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=101797251]
+offset_right = 378.0
+offset_bottom = 200.0
+text = "EVIL PURPLE ALIEN STEALS YUOR FRIEND AND DEMANDS POWER SOTNES TO TURN ON YOU AND YOU LWK GOTTA FIGHT HIM"
+fit_content = true
+
+[node name="Credits" type="Node2D" parent="." unique_id=635934664]
+position = Vector2(1734, 24)
+script = ExtResource("10_uui5l")
+
+[node name="background" type="ColorRect" parent="Credits" unique_id=1213165286]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Credits/background" unique_id=287679811]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+bbcode_enabled = true
+text = "[font_size=75]Credits:[/font_size]
+[font_size=30]Kyle Nham (koyle)[/font_size]
+Main Scripter
+
+[font_size=30]Riyad Zahraoui (dum_nub)[/font_size]
+Designer
+Via Effect
+Scripter
+
+[font_size=30]Huu Thang Tu (Ravduct)[/font_size]
+Music Producer
+Scripter"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="cameraNode" type="Node2D" parent="Credits/background" unique_id=195891448]
+
+[node name="backButton" type="Button" parent="Credits/background" unique_id=1432172619]
+layout_mode = 0
+offset_left = 43.0
+offset_top = 34.0
+offset_right = 88.0
+offset_bottom = 65.0
+text = "Back"
+script = ExtResource("10_4hago")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1863579707]
+script = ExtResource("10_h73c4")
+
+[node name="menu music" type="AudioStreamPlayer2D" parent="Camera2D" unique_id=1909027303]
+position = Vector2(-441, -525)
+scale = Vector2(400, 399.99997)
+skew = 0.28797925
+stream = ExtResource("4_85riq")
+pitch_scale = 0.6
+autoplay = true
+parameters/looping = true
+
+[node name="Settings" type="Node2D" parent="." unique_id=838375638]
+position = Vector2(12, 811)
+
+[node name="ColorRect" type="ColorRect" parent="Settings" unique_id=336643738]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0, 0, 0, 1)

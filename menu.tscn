@@ -1,10 +1,10 @@
-[gd_scene format=3 uid="uid://xfuqubm5s3ql"]
+[gd_scene format=3 uid="uid://4d1pxfcbserv"]
 
 [ext_resource type="Script" uid="uid://ljb2xv3t755m" path="res://static_body_2d.gd" id="1_0e48y"]
-[ext_resource type="Texture2D" uid="uid://c7p7507kdt0rt" path="res://glow.png" id="2_0hol4"]
-[ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://planet.png" id="2_epypp"]
-[ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://planet_menu.mp3" id="3_epypp"]
-[ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://play button.png" id="5_q6r6c"]
+[ext_resource type="Texture2D" path="res://glow.png" id="2_0hol4"]
+[ext_resource type="Texture2D" path="res://planet.png" id="2_epypp"]
+[ext_resource type="AudioStream" path="res://planet_menu.mp3" id="3_epypp"]
+[ext_resource type="Texture2D" path="res://play button.png" id="5_q6r6c"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
 _limits = [-360.0, 360.0, 0.0, 1.0]
