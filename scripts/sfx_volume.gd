@@ -1,10 +1,10 @@
+'''
 extends Node2D
 var output
 var music_volume
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
 	var slider = get_node("volumeSlide")
 	var title = get_node("title")
 	music_volume = owner.get_node("Camera2D").get_node("menu music").volume_db
@@ -21,3 +21,4 @@ func change_value(value: float) -> void:
 	
 	output.bbcode_enabled = true
 	output.text = "[center]" + str(value) + "[/center]"
+	'''
