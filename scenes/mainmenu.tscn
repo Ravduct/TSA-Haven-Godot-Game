@@ -11,11 +11,10 @@
 
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scenes/credits.gd" id="7_wf3n4"]
 [ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
-[ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scenes/back_button.gd" id="10_4hago"]
-[ext_resource type="Script" uid="uid://dbocjoc8ftvb3" path="res://scenes/camera_2d.gd" id="10_h73c4"]
-[ext_resource type="Script" uid="uid://diqa0ct71budq" path="res://scenes/credits_node.gd" id="10_uui5l"]
+[ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
+[ext_resource type="Script" uid="uid://dbocjoc8ftvb3" path="res://scripts/camera_2d.gd" id="10_h73c4"]
+[ext_resource type="Script" uid="uid://diqa0ct71budq" path="res://scripts/credits_node.gd" id="10_uui5l"]
 [ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scenes/music_volume.gd" id="14_kait0"]
-[ext_resource type="Script" uid="uid://dlepee6wfu68f" path="res://scenes/sfx_volume.gd" id="15_6pj40"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
 _limits = [-360.0, 360.0, 0.0, 1.0]
@@ -240,7 +239,6 @@ text = "[center]Music Volume[/center]"
 
 [node name="sfxVolume" type="Node2D" parent="Settings/background" unique_id=325761545]
 position = Vector2(0, 50)
-script = ExtResource("15_6pj40")
 
 [node name="volumeSlide" type="HSlider" parent="Settings/background/sfxVolume" unique_id=1234735107]
 offset_left = 476.0
