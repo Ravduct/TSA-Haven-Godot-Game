@@ -19,7 +19,8 @@
 [ext_resource type="Texture2D" uid="uid://bp5rrgnfaa15j" path="res://image assets/jell3.png" id="16_h6wmr"]
 [ext_resource type="Texture2D" uid="uid://ogjitjnffyo3" path="res://image assets/jello_empty.png" id="17_pqd0y"]
 [ext_resource type="PackedScene" uid="uid://bowkv52chqd7c" path="res://scenes/parallax_2d.tscn" id="19_gunhw"]
-[ext_resource type="Script" uid="uid://dytb3lhl1vflw" path="res://scenes/progress_bar.gd" id="20_8gofh"]
+[ext_resource type="Script" uid="uid://cbepyvrc1w4ky" path="res://scenes/progress_bar.gd" id="20_8gofh"]
+[ext_resource type="Script" uid="uid://05cjtwa7fklp" path="res://scenes/checkpoint_saved.gd" id="21_h6wmr"]
 
 [sub_resource type="Shader" id="Shader_8c41q"]
 code = "shader_type canvas_item;
@@ -330,3 +331,32 @@ offset_right = 1136.0
 offset_bottom = 102.0
 value = 50.0
 script = ExtResource("20_8gofh")
+
+[node name="checkpointSaved" type="RichTextLabel" parent="CanvasLayer" unique_id=929566961]
+offset_left = 356.0
+offset_top = 112.0
+offset_right = 796.5776
+offset_bottom = 195.0
+bbcode_enabled = true
+text = "[color=green][font_size=50]Checkpoint Saved[/font_size][/color]"
+horizontal_alignment = 1
+script = ExtResource("21_h6wmr")
+
+[node name="Timer" type="Timer" parent="CanvasLayer/checkpointSaved" unique_id=345321354]
+
+[node name="deathScreen" type="ColorRect" parent="CanvasLayer" unique_id=943311670]
+visible = false
+custom_minimum_size = Vector2(1152, 648)
+offset_right = 1147.0
+offset_bottom = 482.0
+color = Color(0, 0, 0, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/deathScreen" unique_id=74884092]
+custom_minimum_size = Vector2(1152, 648)
+layout_mode = 0
+offset_right = 1113.0
+offset_bottom = 599.0
+bbcode_enabled = true
+text = "[font_size=75][color=red]YOU FAILED[/color][/font_size]"
+horizontal_alignment = 1
+vertical_alignment = 1

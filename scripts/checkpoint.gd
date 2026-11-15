@@ -15,4 +15,8 @@ func on_hit(node: Node):
 	if node != player || !active: return
 	active = false
 	respawnPoint.position = self.position
+	
+	var checkpoint = owner.get_node("CanvasLayer").get_node("checkpointSaved")
+	checkpoint.checkout()
+	
 	jello.play()

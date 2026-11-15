@@ -252,6 +252,13 @@ func _apply_material() -> void:
 func add_ripple(amount: float) -> void:
 	ripple = min(ripple + amount, max_ripple)
 
+func die():
+	var deathScreen = owner.get_node("CanvasLayer").get_node("deathScreen")
+	deathScreen.show()
+	await get_tree().create_timer(2.0).timeout
+	deathScreen.hide()
+	respawn()
+
 func respawn() -> void:
 	position = get_node("/root/Node2D/respawn").global_position
 	velocity = Vector2.ZERO
@@ -259,7 +266,7 @@ func respawn() -> void:
 
 func on_hit(body: Node):
 	if body.name != "slime" || (body.get_meta_list().has("type") && body.get_meta("type") != "red"): return
-	respawn()
+	die()
 	
 func _process(_delta):
 	bounce = 0.1 if Input.is_action_pressed("down") else ogbounce

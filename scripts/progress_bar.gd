@@ -11,8 +11,8 @@ func _ready() -> void:
 	style.border_width_right = 5
 	style.border_width_top = 5
 	style.border_color = Color.MEDIUM_PURPLE
-	
 	self.add_theme_stylebox_override("background", style)
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
