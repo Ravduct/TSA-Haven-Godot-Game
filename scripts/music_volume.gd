@@ -5,7 +5,6 @@ var music_volume
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var slider = get_node("volumeSlide")
-	var title = get_node("title")
 	music_volume = owner.get_node("Camera2D").get_node("menu music").volume_db
 	output = get_node("volumeNum")
 	

@@ -1,14 +1,69 @@
-[gd_scene format=3 uid="uid://curlaob3cq6jt"]
+[gd_scene format=4 uid="uid://curlaob3cq6jt"]
 
-[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/path_follow_2d.gd" id="1_2q6dc"]
 [ext_resource type="Texture2D" uid="uid://lhdym8a0bchm" path="res://image assets/bubble.png" id="2_ppgk2"]
 [ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scripts/slime.gd" id="2_w8frs"]
+[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/follow.gd" id="3_64w2a"]
 [ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
-[ext_resource type="Shader" uid="uid://cp773cey4isgd" path="res://shaders/new_shader.gdshader" id="3_w8frs"]
+[ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="3_ppgk2"]
+[ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_fpun6"]
 [ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
+[ext_resource type="Texture2D" uid="uid://cg3dbf4eu85f4" path="res://image assets/green_tileset.png" id="5_ppgk2"]
+[ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
+[ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_olg7q"]
+[ext_resource type="Texture2D" uid="uid://dgbd2ixc1k3r8" path="res://image assets/2026_11_14_0u5_Kleki.png" id="9_olg7q"]
+[ext_resource type="Script" uid="uid://c55kdhwdlo15d" path="res://scripts/checkpoint.gd" id="10_olg7q"]
+[ext_resource type="Texture2D" uid="uid://ccnbdlv1c1mve" path="res://image assets/jellofull.png" id="13_82cfe"]
+[ext_resource type="Texture2D" uid="uid://2oh1um0mb6ua" path="res://image assets/chillslime.png" id="13_wc255"]
+[ext_resource type="Texture2D" uid="uid://cfcrw4qwc48k7" path="res://image assets/jell1.png" id="14_gunhw"]
+[ext_resource type="Texture2D" uid="uid://doo26fljh7j1w" path="res://image assets/jell2.png" id="15_8gofh"]
+[ext_resource type="Texture2D" uid="uid://bp5rrgnfaa15j" path="res://image assets/jell3.png" id="16_h6wmr"]
+[ext_resource type="Texture2D" uid="uid://ogjitjnffyo3" path="res://image assets/jello_empty.png" id="17_pqd0y"]
+[ext_resource type="PackedScene" uid="uid://bowkv52chqd7c" path="res://scenes/parallax_2d.tscn" id="19_gunhw"]
+
+[sub_resource type="Shader" id="Shader_8c41q"]
+code = "shader_type canvas_item;
+
+uniform vec4 base_teal : source_color = vec4(0.05, 0.65, 0.6, 0.85);
+uniform vec4 deep_teal : source_color = vec4(0.02, 0.35, 0.45, 0.92);
+uniform vec4 soft_glow : source_color = vec4(0.45, 0.95, 0.85, 1.0);
+
+uniform float wobble_speed : hint_range(0.5, 5.0) = 1.6;
+uniform float wave_height : hint_range(0.0, 0.08) = 0.02;
+
+void fragment() {
+    vec2 uv = UV;
+    
+    // 1. Gentle, rounded jello wave at the top (not choppy)
+    float top_wave = sin(uv.x * 5.0 + TIME * wobble_speed) * wave_height;
+    top_wave += sin(uv.x * 3.0 - TIME * (wobble_speed * 0.7)) * (wave_height * 0.5);
+    float surface_y = (wave_height * 2.0) + top_wave;
+    
+    if (uv.y < surface_y) {
+        discard;
+    }
+    
+   
+    float wobble_x = sin(uv.y * 4.0 + TIME * wobble_speed) * 0.03;
+    float wobble_y = cos(uv.x * 4.0 - TIME * wobble_speed) * 0.03;
+    vec2 jelly_uv = uv + vec2(wobble_x, wobble_y);
+    
+
+    float blob1 = length(jelly_uv - vec2(0.35 + sin(TIME * 0.8) * 0.1, 0.45 + cos(TIME * 0.6) * 0.1));
+    float blob2 = length(jelly_uv - vec2(0.7 + cos(TIME * 0.7) * 0.1, 0.6 + sin(TIME * 0.9) * 0.1));
+    
+   
+    float glow = smoothstep(0.45, 0.05, blob1) * 0.35 + smoothstep(0.4, 0.05, blob2) * 0.25;
+    
+  
+    float depth = clamp((uv.y - surface_y) / (1.0 - surface_y), 0.0, 1.0);
+    vec4 color = mix(base_teal, deep_teal, depth);
+    color.rgb = mix(color.rgb, soft_glow.rgb, glow);
+    
+    COLOR = color;
+}"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_klq6b"]
-shader = ExtResource("3_w8frs")
+shader = SubResource("Shader_8c41q")
 shader_parameter/base_teal = Color(0.05, 0.65, 0.6, 0.85)
 shader_parameter/deep_teal = Color(0.02, 0.35, 0.45, 0.92)
 shader_parameter/soft_glow = Color(0.45, 0.95, 0.85, 1)
@@ -19,86 +74,12 @@ shader_parameter/wave_height = 0.05
 offsets = PackedFloat32Array(0, 0.75123155, 0.93842363, 0.99753696)
 colors = PackedColorArray(1, 1, 1, 1, 0.6666667, 0.8509804, 0.8535948, 0.6666667, 0.20246914, 0.6434568, 0.64971197, 0.20246914, 0, 0.5529412, 0.56078434, 0)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bkp3o"]
-size = Vector2(1374, 123)
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_bkp3o"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mx8sn"]
-size = Vector2(2125.25, 123)
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_ppgk2"]
-
-[sub_resource type="GDScript" id="GDScript_7olc6"]
-resource_name = "player"
-script/source = "extends CharacterBody2D
-
-@export var speed: int = 100
-@export var jumpPower: int = 500
-@export var friction: float = 0.8
-@export var air_res: float = 0.99
-@export var bounce: float = 0.4
-
-var gravity: int = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
-var last_vy: int
-var cartoon_buildup: int = 0
-var boingboing: bool = true
-
-func _ready():
-	$hurtbox.body_entered.connect(on_hit)
-
-func respawn() -> void:
-	position = Vector2.ZERO
-	velocity = Vector2.ZERO
-
-func parentPlatform(platform: Node):
-	reparent(platform)
-	boingboing = false
-
-func resetParent():
-	reparent($Node2D)
-	boingboing = true
-	
-func on_hit(body: Node):
-	if body.name != \"slime\": return
-	respawn()
-
-func _process(_float):
-	bounce = 0.2 if Input.is_action_pressed(\"down\") else 0.4
-	speed = 200 if Input.is_action_pressed(\"run\") else 100
-
-func _physics_process(delta: float):
-	var direction := int(Input.is_action_pressed(\"right\")) - int(Input.is_action_pressed(\"left\"))
-	if !is_on_floor():
-		velocity.y += gravity * delta
-		velocity.x *= air_res
-		if direction:
-			velocity.x += direction * (speed / 10)
-	else:
-		if boingboing: velocity.y = floor(last_vy * -bounce)
-		if Input.is_action_pressed(\"jump\"):
-			velocity.y -= jumpPower
-		
-		if direction:
-			velocity.x += direction * speed
-		
-		velocity.x *= friction
-	
-	velocity.x = roundi(velocity.x)
-	velocity.y = roundi(velocity.y)
-	last_vy = velocity.y
-	move_and_slide()
-	
-	if position.y > 1500:
-		respawn()
-"
-
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l4wpc"]
 size = Vector2(71, 138)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_bkp3o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vrpp"]
 
@@ -107,6 +88,8 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, 0, -25.461548, -628.87305, 0, 0, 0, 0, -112.58656, 240.82532, 0, 0, 0, 0, -191.03848, -1182.3175)
 }
 point_count = 3
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2q6dc"]
 size = Vector2(543, 109.5)
@@ -118,14 +101,64 @@ size = Vector2(1115, 701)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7olc6"]
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2r41h"]
+texture = ExtResource("5_ppgk2")
+texture_region_size = Vector2i(100, 100)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+1:0/0 = 0
+1:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+2:0/0 = 0
+2:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+3:0/0 = 0
+3:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+0:1/0 = 0
+0:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+2:1/0 = 0
+2:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
+3:1/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_bkp3o"]
+tile_size = Vector2i(100, 100)
+physics_layer_0/collision_layer = 5
+sources/0 = SubResource("TileSetAtlasSource_2r41h")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lba0c"]
+size = Vector2(326, 148)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bkp3o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_82cfe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_gunhw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_8gofh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_h6wmr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_pqd0y")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 3.0
+}]
+
 [node name="Node2D" type="Node2D" unique_id=1801803192]
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=40623188]
 material = SubResource("ShaderMaterial_klq6b")
-offset_left = 1732.0
-offset_top = 582.0
-offset_right = 2456.0
-offset_bottom = 776.0
+offset_left = 2973.0
+offset_top = 870.0
+offset_right = 3697.0
+offset_bottom = 1064.0
 metadata/_edit_use_anchors_ = true
 
 [node name="bubbles" type="CPUParticles2D" parent="ColorRect" unique_id=1065649557]
@@ -142,59 +175,8 @@ scale_amount_min = 0.01
 scale_amount_max = 0.1
 color_ramp = SubResource("Gradient_b121j")
 
-[node name="ground" type="StaticBody2D" parent="." unique_id=609733895]
-position = Vector2(1336, 572)
-rotation = 1.5707964
-collision_layer = 5
-
-[node name="hitbox" type="CollisionShape2D" parent="ground" unique_id=433314589]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(-442, 59.000046)
-shape = SubResource("RectangleShape2D_bkp3o")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="ground/hitbox" unique_id=1877749373]
-position = Vector2(3.7499657, 0)
-scale = Vector2(1344.9999, 123.000015)
-texture = SubResource("CanvasTexture_bkp3o")
-
-[node name="hitbox2" type="CollisionShape2D" parent="ground" unique_id=870870036]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(-474.9999, 1976)
-shape = SubResource("RectangleShape2D_bkp3o")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="ground/hitbox2" unique_id=1501891324]
-position = Vector2(3.7499657, 0)
-scale = Vector2(1344.9999, 123.000015)
-texture = SubResource("CanvasTexture_bkp3o")
-
-[node name="hitbox3" type="CollisionShape2D" parent="ground" unique_id=738314842]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(61.00006, 1115.375)
-rotation = -1.5707964
-shape = SubResource("RectangleShape2D_mx8sn")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="ground/hitbox3" unique_id=1080946821]
-position = Vector2(3.7499657, 0)
-scale = Vector2(2131.25, 123.000015)
-texture = SubResource("CanvasTexture_ppgk2")
-
-[node name="hitbox4" type="CollisionShape2D" parent="ground" unique_id=1244868816]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(-1015, 1115)
-rotation = -1.5707964
-shape = SubResource("RectangleShape2D_mx8sn")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="ground/hitbox4" unique_id=479894572]
-position = Vector2(3.7499657, 0)
-scale = Vector2(2131.25, 123.000015)
-texture = SubResource("CanvasTexture_ppgk2")
-
 [node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
-script = SubResource("GDScript_7olc6")
+script = ExtResource("3_ppgk2")
 
 [node name="hitbox" type="CollisionShape2D" parent="player" unique_id=30282243]
 material = SubResource("CanvasItemMaterial_wtcfe")
@@ -215,7 +197,7 @@ scale = Vector2(5.0000005, 7.482115)
 shape = SubResource("RectangleShape2D_1vrpp")
 
 [node name="path" type="Path2D" parent="." unique_id=511733077]
-position = Vector2(905.5854, 384.21844)
+position = Vector2(2095, -385)
 scale = Vector2(2.5365853, 0.21501707)
 curve = SubResource("Curve2D_rd3vj")
 
@@ -226,7 +208,7 @@ scale = Vector2(0.39423078, 4.6507936)
 rotates = false
 cubic_interp = false
 loop = false
-script = ExtResource("1_2q6dc")
+script = ExtResource("3_64w2a")
 
 [node name="remoteTransform" type="RemoteTransform2D" parent="path/follow" unique_id=1814506669]
 remote_path = NodePath("../../platform")
@@ -234,7 +216,8 @@ update_rotation = false
 update_scale = false
 
 [node name="platform" type="AnimatableBody2D" parent="path" unique_id=1992280718]
-position = Vector2(-25.461548, -628.87305)
+position = Vector2(-25.461609, -628.87317)
+script = ExtResource("4_fpun6")
 
 [node name="hitbox" type="CollisionShape2D" parent="path/platform" unique_id=462692707]
 material = SubResource("CanvasItemMaterial_y32ns")
@@ -248,7 +231,7 @@ scale = Vector2(544, 109.5)
 texture = SubResource("CanvasTexture_w7c3h")
 
 [node name="area" type="Area2D" parent="." unique_id=108581321]
-position = Vector2(206, 0)
+position = Vector2(-370, 0)
 collision_layer = 2
 script = ExtResource("4_mx8sn")
 
@@ -258,10 +241,10 @@ shape = SubResource("RectangleShape2D_nmbfl")
 debug_color = Color(1, 1, 0, 0.41960785)
 
 [node name="slime" type="CharacterBody2D" parent="area" unique_id=2014866072]
-position = Vector2(15, 521)
+position = Vector2(29, 564)
 collision_mask = 6
 script = ExtResource("2_w8frs")
-metadata/type = "slime"
+metadata/type = "red"
 
 [node name="hitbox" type="CollisionShape2D" parent="area/slime" unique_id=537911198]
 scale = Vector2(5, 5)
@@ -271,3 +254,67 @@ shape = SubResource("RectangleShape2D_7olc6")
 position = Vector2(0.09999776, 0.09999776)
 scale = Vector2(0.04, 0.04)
 texture = ExtResource("3_mx8sn")
+
+[node name="area2" type="Area2D" parent="." unique_id=1144792476]
+position = Vector2(2292, 0)
+collision_layer = 2
+script = ExtResource("7_8c41q")
+
+[node name="hitbox" type="CollisionShape2D" parent="area2" unique_id=1912547411]
+position = Vector2(-249.5, 306.5)
+shape = SubResource("RectangleShape2D_nmbfl")
+debug_color = Color(1, 1, 0, 0.41960785)
+
+[node name="slime" type="CharacterBody2D" parent="area2" unique_id=1753122061]
+position = Vector2(29, 564)
+collision_mask = 6
+script = ExtResource("8_olg7q")
+metadata/type = "green"
+
+[node name="hitbox" type="CollisionShape2D" parent="area2/slime" unique_id=2122671951]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_7olc6")
+
+[node name="sprite" type="Sprite2D" parent="area2/slime/hitbox" unique_id=1685669662]
+position = Vector2(0.19999777, 0.19999777)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("9_olg7q")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=33805410]
+position = Vector2(2095, -385)
+tile_map_data = PackedByteArray("AAD1/woAAAAAAAAAAAD0/woAAAAAAAAAAADz/woAAAAAAAAAAADy/woAAAAAAAAAAADx/woAAAAAAAAAAADw/woAAAAAAAAAAADv/woAAAAAAAAAAADu/woAAAAAAAAAAADt/woAAAAAAAAAAADr/woAAAAAAAAAAADq/woAAAAAAAAAAADp/woAAAAAAAAAAADo/woAAAAAAAAAAADn/woAAAAAAAAAAADm/woAAAAAAAAAAADl/woAAAAAAAAAAADk/woAAAAAAAAAAADj/woAAAAAAAAAAADi/woAAAAAAAAAAADh/woAAAAAAAAAAADg/woAAAAAAAAAAADf/woAAAAAAAAAAADs/woAAAAAAAAAAADf/wkAAAAAAAAAAADf/wgAAAAAAAAAAADf/wcAAAAAAAAAAADf/wYAAAAAAAAAAADf/wUAAAAAAAAAAADf/wQAAAAAAAAAAADf/wMAAAAAAAAAAADf/wIAAAAAAAAAAADf/wEAAAAAAAAAAADf/wAAAAAAAAAAAADf////AAAAAAAAAADf//7/AAAAAAAAAADf//3/AAAAAAAAAADg//3/AAAAAAAAAADh//3/AAAAAAAAAADi//3/AAAAAAAAAADj//3/AAAAAAAAAADk//3/AAAAAAAAAADl//3/AAAAAAAAAADm//3/AAAAAAAAAADn//3/AAAAAAAAAADo//3/AAAAAAAAAADp//3/AAAAAAAAAADq//3/AAAAAAAAAADr//3/AAAAAAAAAADs//3/AAAAAAAAAADt//3/AAAAAAAAAADu//3/AAAAAAAAAADv//3/AAAAAAAAAADw//3/AAAAAAAAAADx//3/AAAAAAAAAADy//3/AAAAAAAAAADz//3/AAAAAAAAAAD0//3/AAAAAAAAAAD1//3/AAAAAAAAAAD2//3/AAAAAAAAAAD2//7/AAAAAAAAAAD2////AAAAAAAAAAD2/wAAAAAAAAAAAAD2/wEAAAAAAAAAAAD2/wIAAAAAAAAAAAD2/wMAAAAAAAAAAAD2/woAAAAAAAAAAAD3/woAAAAAAAAAAAD4/woAAAAAAAAAAAD5/woAAAAAAAAAAAD6/woAAAAAAAAAAAD7/woAAAAAAAAAAAD8/woAAAAAAAAAAAD9/woAAAAAAAAAAAD+/woAAAAAAAAAAAD//woAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAoAAAAAAAAAAAAPAAoAAAAAAAAAAAAQAAoAAAAAAAAAAAARAAoAAAAAAAAAAAASAAoAAAAAAAAAAAASAAkAAAAAAAAAAAASAAgAAAAAAAAAAAASAAcAAAAAAAAAAAASAAYAAAAAAAAAAAASAAUAAAAAAAAAAAASAAQAAAAAAAAAAAASAAMAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_bkp3o")
+
+[node name="respawn" type="Node2D" parent="." unique_id=99566622]
+position = Vector2(476, 185)
+
+[node name="checkpoint" type="Area2D" parent="." unique_id=308182329]
+position = Vector2(1218, 359)
+script = ExtResource("10_olg7q")
+
+[node name="hitbox" type="CollisionShape2D" parent="checkpoint" unique_id=456030928]
+position = Vector2(0, 188)
+shape = SubResource("RectangleShape2D_lba0c")
+
+[node name="jello" type="AnimatedSprite2D" parent="checkpoint/hitbox" unique_id=1394931713]
+z_index = -1
+position = Vector2(0, -2)
+sprite_frames = SubResource("SpriteFrames_bkp3o")
+
+[node name="slime" type="RigidBody2D" parent="." unique_id=2039479575]
+position = Vector2(3261, 285)
+mass = 0.2
+can_sleep = false
+metadata/type = "purple"
+
+[node name="hitbox" type="CollisionShape2D" parent="slime" unique_id=898233289]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_7olc6")
+
+[node name="sprite" type="Sprite2D" parent="slime/hitbox" unique_id=881869810]
+position = Vector2(0.19999777, -0.40000224)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("13_wc255")
+
+[node name="backgound" parent="." unique_id=1550976510 instance=ExtResource("19_gunhw")]
+z_index = -10

@@ -33,7 +33,6 @@ func _physics_process(delta: float) -> void:
 	var collision = move_and_collide(velocity * delta)
 	
 	if collision:
-		var collider = collision.get_collider()
 		if movingdir == direction.COUNTERCLOCKWISE:
 			match dir:
 				direction.DOWN:
