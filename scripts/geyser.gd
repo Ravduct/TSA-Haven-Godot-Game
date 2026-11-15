@@ -10,7 +10,7 @@ func toggle():
 func _physics_process(delta: float) -> void:
 	if on:
 		for i in $hitbox.get_overlapping_bodies():
-			i.velocity.y -= 120
+			i.velocity.y -= 180
 
 func _ready():
 	toggle()
