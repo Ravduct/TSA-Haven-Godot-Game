@@ -1,26 +1,9 @@
-[gd_scene format=3 uid="uid://curlaob3cq6jt"]
+[gd_scene format=4 uid="uid://curlaob3cq6jt"]
 
-[ext_resource type="Texture2D" uid="uid://b5vqn7cpyhnpv" path="res://image assets/astro.png" id="1_2q6dc"]
-[ext_resource type="Texture2D" uid="uid://pc6qfdlfeqr7" path="res://image assets/jelly.png" id="1_w7c3h"]
 [ext_resource type="Texture2D" uid="uid://lhdym8a0bchm" path="res://image assets/bubble.png" id="2_ppgk2"]
-[ext_resource type="Shader" uid="uid://cp773cey4isgd" path="res://new_shader.gdshader" id="3_w8frs"]
-[ext_resource type="Shader" uid="uid://4auq1hekdte2" path="res://jellojiggle.gdshader" id="4_2r41h"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_klq6b"]
-shader = ExtResource("3_w8frs")
-shader_parameter/base_teal = Color(0.05, 0.65, 0.6, 0.85)
-shader_parameter/deep_teal = Color(0.02, 0.35, 0.45, 0.92)
-shader_parameter/soft_glow = Color(0.45, 0.95, 0.85, 1)
-shader_parameter/wobble_speed = 1.8
-shader_parameter/wave_height = 0.05
-[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scenes/path_follow_2d.gd" id="1_2q6dc"]
-[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scenes/slime.gd" id="2_w8frs"]
+[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scripts/slime.gd" id="2_w8frs"]
+[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/follow.gd" id="3_64w2a"]
 [ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
-[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scenes/enemy area.gd" id="4_mx8sn"]
-
-<<<<<<< Updated upstream
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
-=======
 [sub_resource type="Shader" id="Shader_8c41q"]
 code = "shader_type canvas_item;
 
@@ -70,98 +53,11 @@ shader_parameter/deep_teal = Color(0.57837015, 0.11448554, 0, 0.92156863)
 shader_parameter/soft_glow = Color(0.9906562, 0.79733944, 0.7332551, 1)
 shader_parameter/wobble_speed = 0.910000019475
 shader_parameter/wave_height = 0.0250000011875
->>>>>>> Stashed changes
 
 [sub_resource type="Gradient" id="Gradient_b121j"]
 offsets = PackedFloat32Array(0, 0.75123155, 0.93842363, 0.99753696)
 colors = PackedColorArray(1, 1, 1, 1, 0.6666667, 0.8509804, 0.8535948, 0.6666667, 0.20246914, 0.6434568, 0.64971197, 0.20246914, 0, 0.5529412, 0.56078434, 0)
 
-<<<<<<< Updated upstream
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8c41q"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_olg7q"]
-size = Vector2(322, 209)
-
-[sub_resource type="QuadMesh" id="QuadMesh_t1rx8"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8iemx"]
-render_priority = 0
-shader = ExtResource("4_2r41h")
-
-[sub_resource type="GDScript" id="GDScript_64w2a"]
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mx8sn"]
-size = Vector2(2125.25, 123)
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_ppgk2"]
-
-[sub_resource type="GDScript" id="GDScript_7olc6"]
-resource_name = "player"
-script/source = "extends CharacterBody2D
-
-@export var speed: int = 100
-@export var jumpPower: int = 500
-@export var friction: float = 0.8
-@export var air_res: float = 0.99
-@export var bounce: float = 0.4
-
-var gravity: int = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
-var last_vy: int
-var cartoon_buildup: int = 0
-var boingboing: bool = true
-
-func _ready():
-	$hurtbox.body_entered.connect(on_hit)
-
-func respawn() -> void:
-	position = Vector2.ZERO
-	velocity = Vector2.ZERO
-
-func parentPlatform(platform: Node):
-	reparent(platform)
-	boingboing = false
-
-func resetParent():
-	reparent($Node2D)
-	boingboing = true
-	
-func on_hit(body: Node):
-	if body.name != \"slime\": return
-	respawn()
-
-func _process(_float):
-	bounce = 0.2 if Input.is_action_pressed(\"down\") else 0.4
-	speed = 200 if Input.is_action_pressed(\"run\") else 100
-
-func _physics_process(delta: float):
-	var direction := int(Input.is_action_pressed(\"right\")) - int(Input.is_action_pressed(\"left\"))
-	if !is_on_floor():
-		velocity.y += gravity * delta
-		velocity.x *= air_res
-		if direction:
-			velocity.x += direction * (speed / 10)
-	else:
-		if boingboing: velocity.y = floor(last_vy * -bounce)
-		if Input.is_action_pressed(\"jump\"):
-			velocity.y -= jumpPower
-		
-		if direction:
-			velocity.x += direction * speed
-		
-		velocity.x *= friction
-	
-	velocity.x = roundi(velocity.x)
-	velocity.y = roundi(velocity.y)
-	last_vy = velocity.y
-	move_and_slide()
-	
-	if position.y > 1500:
-		respawn()
-"
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fpun6"]
-size = Vector2(71, 138)
-
-=======
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_h6wmr"]
 size = Vector2(4602, 552)
 
@@ -175,48 +71,69 @@ size = Vector2(71, 138)
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_bkp3o"]
 
->>>>>>> Stashed changes
+[ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="3_ppgk2"]
+[ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_fpun6"]
+[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
+[ext_resource type="Texture2D" uid="uid://bso4ioh743e86" path="res://image assets/jellyfish1.png" id="4_pqd0y"]
+[ext_resource type="Texture2D" uid="uid://cjif16n3qbigx" path="res://image assets/jellyfish2.png" id="5_5k0ak"]
+[ext_resource type="Texture2D" uid="uid://cg3dbf4eu85f4" path="res://image assets/green_tileset.png" id="5_ppgk2"]
+[ext_resource type="Script" uid="uid://p3hr1xg5e04w" path="res://scenes/sprite.gd" id="6_3ies3"]
+[ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
+[ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_olg7q"]
+[ext_resource type="Texture2D" uid="uid://dgbd2ixc1k3r8" path="res://image assets/2026_11_14_0u5_Kleki.png" id="9_olg7q"]
+[ext_resource type="Script" uid="uid://c55kdhwdlo15d" path="res://scripts/checkpoint.gd" id="10_olg7q"]
+[ext_resource type="Texture2D" uid="uid://ccnbdlv1c1mve" path="res://image assets/jellofull.png" id="13_82cfe"]
+[ext_resource type="Texture2D" uid="uid://2oh1um0mb6ua" path="res://image assets/chillslime.png" id="13_wc255"]
+[ext_resource type="Texture2D" uid="uid://cfcrw4qwc48k7" path="res://image assets/jell1.png" id="14_gunhw"]
+[ext_resource type="Texture2D" uid="uid://doo26fljh7j1w" path="res://image assets/jell2.png" id="15_8gofh"]
+[ext_resource type="Texture2D" uid="uid://bp5rrgnfaa15j" path="res://image assets/jell3.png" id="16_h6wmr"]
+[ext_resource type="Texture2D" uid="uid://ogjitjnffyo3" path="res://image assets/jello_empty.png" id="17_pqd0y"]
+[ext_resource type="Script" uid="uid://bvc4m7ghsrump" path="res://scripts/drowning.gd" id="19_8gofh"]
+[ext_resource type="PackedScene" uid="uid://bowkv52chqd7c" path="res://scenes/parallax_2d.tscn" id="19_gunhw"]
+[ext_resource type="Texture2D" uid="uid://gxi2ysip4x71" path="res://image assets/geyser.png" id="23_5k0ak"]
+[ext_resource type="Script" uid="uid://dr5mwu6bwat54" path="res://scripts/geyser.gd" id="24_wu01b"]
+[ext_resource type="AudioStream" uid="uid://dgckjeifib5nh" path="res://music/space_adventure.mp3" id="26_xy2fk"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l4wpc"]
+size = Vector2(71, 138)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_bkp3o"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vrpp"]
 
 [sub_resource type="Curve2D" id="Curve2D_rd3vj"]
 _data = {
-<<<<<<< Updated upstream
-"points": PackedVector2Array(0, 0, 0, 0, -25.461548, -628.87305, 0, 0, 0, 0, -112.58656, 240.82532, 0, 0, 0, 0, -191.03848, -1182.3175)
-}
-point_count = 3
-=======
 "points": PackedVector2Array(0, 0, 0, 0, 732.0864, 772.03174, 0, 0, 0, 0, 735.24023, -1162.6984, 0, 0, 0, 0, 347.71143, -1162.6984, 0, 0, 0, 0, -26.019287, -1181.3015, 0, 0, 0, 0, -191.03848, -1182.3175)
 }
 point_count = 5
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
->>>>>>> Stashed changes
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2q6dc"]
 size = Vector2(543, 109.5)
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_w7c3h"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mmx0x"]
+size = Vector2(200, 350)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l4wpc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_pqd0y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_5k0ak")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nmbfl"]
-<<<<<<< Updated upstream
-size = Vector2(1115, 701)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7olc6"]
-
-[node name="Node2D" type="Node2D" unique_id=487297017]
-
-[node name="Node2D" type="Node2D" parent="." unique_id=1801803192]
-
-[node name="ColorRect" type="ColorRect" parent="Node2D" unique_id=40623188]
-material = SubResource("ShaderMaterial_klq6b")
-offset_left = 156.0
-offset_top = 550.0
-offset_right = 880.0
-offset_bottom = 744.0
-metadata/_edit_use_anchors_ = true
-
-[node name="bubbles" type="CPUParticles2D" parent="Node2D/ColorRect" unique_id=1065649557]
-=======
 size = Vector2(1106, 330.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7olc6"]
@@ -333,7 +250,8 @@ offset_right = 3709.0
 offset_bottom = 1230.0
 
 [node name="bubbles" type="CPUParticles2D" parent="jarona2/ColorRect" unique_id=1328394043]
->>>>>>> Stashed changes
+
+[node name="bubbles" type="CPUParticles2D" parent="jarona/ColorRect" unique_id=1065649557]
 position = Vector2(296, 220)
 amount = 20
 texture = ExtResource("2_ppgk2")
@@ -345,102 +263,45 @@ emission_rect_extents = Vector2(300, 5)
 gravity = Vector2(0, -300)
 scale_amount_min = 0.01
 scale_amount_max = 0.1
+color = Color(1, 0, 0.41568628, 1)
 color_ramp = SubResource("Gradient_b121j")
 
-<<<<<<< Updated upstream
-[node name="StaticBody2D" type="StaticBody2D" parent="Node2D" unique_id=883296298]
-position = Vector2(-5, 543)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D" unique_id=1955293372]
-material = SubResource("CanvasItemMaterial_8c41q")
-position = Vector2(988, 111)
-shape = SubResource("RectangleShape2D_olg7q")
-[node name="ground" type="StaticBody2D" parent="." unique_id=609733895]
-position = Vector2(1336, 572)
-rotation = 1.5707964
-collision_layer = 5
-
-[node name="hitbox" type="CollisionShape2D" parent="ground" unique_id=433314589]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(578.5, 77.5)
+[node name="hitbox" type="CollisionShape2D" parent="jarona" unique_id=1439656498]
+position = Vector2(3327.5, 978.5)
 shape = SubResource("RectangleShape2D_bkp3o")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Node2D/StaticBody2D" unique_id=943718655]
-position = Vector2(989, 102)
-scale = Vector2(334.9999, 209.50002)
-mesh = SubResource("QuadMesh_t1rx8")
-texture = ExtResource("1_w7c3h")
+[node name="jarona geyser" type="Area2D" parent="." unique_id=1585013713]
+position = Vector2(-6218, -4175)
+scale = Vector2(4.34358, 4.6503396)
+script = ExtResource("19_8gofh")
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="Node2D" unique_id=2068623677]
-position = Vector2(-10, 1086)
+[node name="ColorRect" type="ColorRect" parent="jarona geyser" unique_id=2055134657]
+material = SubResource("ShaderMaterial_klq6b")
+offset_left = 2973.0
+offset_top = 870.0
+offset_right = 3697.0
+offset_bottom = 1064.0
+metadata/_edit_use_anchors_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D2" unique_id=1393941153]
-material = SubResource("CanvasItemMaterial_8c41q")
-position = Vector2(51, -434)
-shape = SubResource("RectangleShape2D_olg7q")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
+[node name="bubbles" type="CPUParticles2D" parent="jarona geyser/ColorRect" unique_id=1667882425]
+position = Vector2(296, 220)
+amount = 20
+texture = ExtResource("2_ppgk2")
+preprocess = 1.03
+explosiveness = 0.07
+randomness = 0.54
+emission_shape = 3
+emission_rect_extents = Vector2(300, 5)
+gravity = Vector2(0, -300)
+scale_amount_min = 0.01
+scale_amount_max = 0.1
+color = Color(1, 0, 0.41568628, 1)
+color_ramp = SubResource("Gradient_b121j")
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Node2D/StaticBody2D2" unique_id=434799542]
-material = SubResource("ShaderMaterial_8iemx")
-position = Vector2(59, -435)
-scale = Vector2(334.9999, 209.50002)
-mesh = SubResource("QuadMesh_t1rx8")
-texture = ExtResource("1_w7c3h")
-
-[node name="Node2D" type="Node2D" parent="Node2D" unique_id=743181966]
-position = Vector2(293, 565)
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="Node2D" unique_id=321510995]
-position = Vector2(19, 376)
-script = SubResource("GDScript_64w2a")
-[node name="hitbox2" type="CollisionShape2D" parent="ground" unique_id=870870036]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(-474.9999, 1976)
+[node name="hitbox" type="CollisionShape2D" parent="jarona geyser" unique_id=317655054]
+position = Vector2(3327.5, 978.5)
 shape = SubResource("RectangleShape2D_bkp3o")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
 
-[node name="sprite" type="Sprite2D" parent="ground/hitbox2" unique_id=1501891324]
-position = Vector2(3.7499657, 0)
-scale = Vector2(1344.9999, 123.000015)
-texture = SubResource("CanvasTexture_bkp3o")
-
-[node name="hitbox3" type="CollisionShape2D" parent="ground" unique_id=738314842]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(61.00006, 1115.375)
-rotation = -1.5707964
-shape = SubResource("RectangleShape2D_mx8sn")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="ground/hitbox3" unique_id=1080946821]
-position = Vector2(3.7499657, 0)
-scale = Vector2(2131.25, 123.000015)
-texture = SubResource("CanvasTexture_ppgk2")
-
-[node name="hitbox4" type="CollisionShape2D" parent="ground" unique_id=1244868816]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(-1015, 1115)
-rotation = -1.5707964
-shape = SubResource("RectangleShape2D_mx8sn")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="ground/hitbox4" unique_id=479894572]
-position = Vector2(3.7499657, 0)
-scale = Vector2(2131.25, 123.000015)
-texture = SubResource("CanvasTexture_ppgk2")
-
-[node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
-script = SubResource("GDScript_7olc6")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/CharacterBody2D" unique_id=99632106]
-position = Vector2(42, 76)
-shape = SubResource("RectangleShape2D_fpun6")
-
-[node name="Sprite2D" type="Sprite2D" parent="Node2D/CharacterBody2D" unique_id=1845799805]
-position = Vector2(44.703236, 82.153046)
-scale = Vector2(0.25883865, 0.2833878)
-texture = ExtResource("1_2q6dc")
-=======
 [node name="hitbox" type="CollisionShape2D" parent="jarona2" unique_id=1310096364]
 position = Vector2(3339.5, 1083.5)
 shape = SubResource("RectangleShape2D_bkp3o")
@@ -620,4 +481,35 @@ shape = SubResource("RectangleShape2D_7olc6")
 position = Vector2(0.19999777, -0.40000224)
 scale = Vector2(0.04, 0.04)
 texture = ExtResource("13_wc255")
->>>>>>> Stashed changes
+
+[node name="geyser" type="CPUParticles2D" parent="jarona geyser" unique_id=1158982046]
+position = Vector2(3078.3364, 905.5252)
+amount = 100
+texture = ExtResource("23_5k0ak")
+direction = Vector2(0, -1)
+spread = 12.62
+initial_velocity_min = 150.31
+initial_velocity_max = 269.13
+angular_velocity_min = -99.81
+angular_velocity_max = 173.29
+linear_accel_min = -100.0
+linear_accel_max = -100.0
+angle_min = -313.7
+angle_max = 244.1
+color = Color(1, 0, 0, 0.25882354)
+color_ramp = SubResource("Gradient_bkp3o")
+script = ExtResource("24_wu01b")
+
+[node name="hitbox" type="Area2D" parent="jarona geyser/geyser" unique_id=988986713]
+
+[node name="hitbox" type="CollisionShape2D" parent="jarona geyser/geyser/hitbox" unique_id=159724875]
+position = Vector2(0, -32.2556)
+shape = SubResource("RectangleShape2D_x156v")
+
+[node name="Timer" type="Timer" parent="jarona geyser/geyser" unique_id=614521388]
+autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=770117665]
+stream = ExtResource("26_xy2fk")
+autoplay = true
+parameters/looping = true

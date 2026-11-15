@@ -57,8 +57,6 @@ extends CharacterBody2D
 @export var move_min_speed: float = 20.0
 @export var move_volume_ease: float = 12.0
 @export var move_stop_delay: float = 0.25
-@export var jump_sound_cooldown: float = 0.25
-@export var debug_audio: bool = false
 
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 var last_v: Vector2
@@ -86,10 +84,6 @@ var move_player: AudioStreamPlayer
 var move_active: bool = false
 var move_amount: float = 0.0
 var move_idle_time: float = 0.0
-var audio_ground_timer: float = 0.0
-var audio_was_grounded: bool = true
-var jump_cooldown: float = 0.0
-var debug_timer: float = 0.0
 
 const JIGGLE_SHADER := """
 shader_type canvas_item;
@@ -151,8 +145,6 @@ func _setup_audio() -> void:
 	land_sounds = _load_sounds(land_keyword)
 	move_sounds = _load_sounds(move_keyword)
 	
-	print("AUDIO: loaded ", jump_sounds.size(), " jump, ", land_sounds.size(), " land, ", move_sounds.size(), " move sounds")
-	
 	jump_player = AudioStreamPlayer.new()
 	land_player = AudioStreamPlayer.new()
 	move_player = AudioStreamPlayer.new()
@@ -186,7 +178,7 @@ func _load_sounds(keyword: String) -> Array[AudioStream]:
 		if res is AudioStream:
 			var s: AudioStream = res as AudioStream
 			if keyword == move_keyword:
-				_make_loop(s)
+				s = _make_loop(s)
 			if not result.has(s):
 				result.append(s)
 	
@@ -194,20 +186,21 @@ func _load_sounds(keyword: String) -> Array[AudioStream]:
 		push_warning("AUDIO: no files containing '" + keyword + "' in " + audio_folder)
 	return result
 
-# sets looping directly on the loaded stream (no duplicate)
-func _make_loop(s: AudioStream) -> void:
-	if s is AudioStreamOggVorbis:
-		(s as AudioStreamOggVorbis).loop = true
-	elif s is AudioStreamMP3:
-		(s as AudioStreamMP3).loop = true
-	elif s is AudioStreamWAV:
-		var w: AudioStreamWAV = s as AudioStreamWAV
+func _make_loop(s: AudioStream) -> AudioStream:
+	var c: AudioStream = s.duplicate() as AudioStream
+	if c is AudioStreamOggVorbis:
+		(c as AudioStreamOggVorbis).loop = true
+	elif c is AudioStreamMP3:
+		(c as AudioStreamMP3).loop = true
+	elif c is AudioStreamWAV:
+		var w: AudioStreamWAV = c as AudioStreamWAV
 		if w.format == AudioStreamWAV.FORMAT_8_BITS or w.format == AudioStreamWAV.FORMAT_16_BITS:
 			var bytes: int = 2 if w.format == AudioStreamWAV.FORMAT_16_BITS else 1
 			var channels: int = 2 if w.stereo else 1
 			w.loop_mode = AudioStreamWAV.LOOP_FORWARD
 			w.loop_begin = 0
 			w.loop_end = w.data.size() / (bytes * channels)
+	return c
 
 func play_random(player: AudioStreamPlayer, sounds: Array[AudioStream], pitch_min: float, pitch_max: float) -> void:
 	if player == null or sounds.is_empty():
@@ -221,50 +214,18 @@ func _on_move_finished() -> void:
 		move_player.stream = move_sounds.pick_random()
 		move_player.play()
 
-# audio ground check: onfloor OR is_on_floor, with a grace period
-func _update_audio(delta: float, jumped: bool) -> void:
-	if onfloor or is_on_floor():
-		audio_ground_timer = ground_grace
-	else:
-		audio_ground_timer = max(audio_ground_timer - delta, 0.0)
-	var audio_grounded: bool = audio_ground_timer > 0.0
-	
-	jump_cooldown = max(jump_cooldown - delta, 0.0)
-	
-	# jump sound
-	if jumped and jump_cooldown <= 0.0:
-		play_random(jump_player, jump_sounds, jump_pitch_min, jump_pitch_max)
-		jump_cooldown = jump_sound_cooldown
-		audio_ground_timer = 0.0
-		audio_grounded = false
-	
-	# land sound
-	if audio_grounded and not audio_was_grounded and abs(last_v.y) > min_land_speed:
-		play_random(land_player, land_sounds, land_pitch_min, land_pitch_max)
-	
-	audio_was_grounded = audio_grounded
-	_update_move_sound(delta, audio_grounded)
-
 func _update_move_sound(delta: float, grounded: bool) -> void:
 	if move_player == null or move_sounds.is_empty():
 		return
 	
-	# use the bigger of current speed and the speed before collisions changed it
-	var spd: float = max(abs(velocity.x), abs(last_v.x))
+	var spd: float = abs(velocity.x)
 	var wants_sound: bool = grounded and spd > move_min_speed
-	
-	if debug_audio:
-		debug_timer += delta
-		if debug_timer > 0.5:
-			debug_timer = 0.0
-			print("MOVE: grounded=", grounded, " spd=", snappedf(spd, 0.1), " active=", move_active, " playing=", move_player.playing, " vol_db=", snappedf(move_player.volume_db, 0.1))
 	
 	if wants_sound:
 		move_idle_time = 0.0
 		if not move_active:
 			move_active = true
-			move_amount = clamp(spd / move_full_speed, 0.0, 1.0)
-			move_player.volume_db = linear_to_db(max(move_amount, 0.0001)) + move_max_volume_db
+			move_amount = 0.0
 			move_player.stream = move_sounds.pick_random()
 			move_player.play()
 	else:
@@ -276,10 +237,6 @@ func _update_move_sound(delta: float, grounded: bool) -> void:
 			return
 	
 	if move_active:
-		# safety net: should be playing but isn't
-		if not move_player.playing:
-			move_player.stream = move_sounds.pick_random()
-			move_player.play()
 		# volume follows speed, and fades down while waiting to stop
 		var target: float = clamp(spd / move_full_speed, 0.0, 1.0) if wants_sound else 0.0
 		move_amount = lerp(move_amount, target, 1.0 - exp(-move_volume_ease * delta))
@@ -351,7 +308,10 @@ func _physics_process(delta: float):
 	if abs(velocity.y) < 0.1 && falling < 1:
 		onfloor = true
 	
-	if is_on_floor():
+	if position.y > 1500:
+		respawn()
+	
+	if onfloor:
 		ground_timer = ground_grace
 	else:
 		ground_timer = max(ground_timer - delta, 0.0)
@@ -363,6 +323,7 @@ func _physics_process(delta: float):
 		radius_scale = jump_radius_scale
 		add_ripple(jump_ripple)
 		ground_timer = 0.0
+		play_random(jump_player, jump_sounds, jump_pitch_min, jump_pitch_max)
 	
 	var grounded := ground_timer > 0.0
 	
@@ -372,13 +333,14 @@ func _physics_process(delta: float):
 		radius_scale = 1.0
 		press_vel += abs(last_v.y) * land_press
 		add_ripple(clamp(abs(last_v.y) / land_ripple_scale, 0.3, max_ripple))
-	elif is_on_floor() and abs(velocity.x) > 20.0:
+		play_random(land_player, land_sounds, land_pitch_min, land_pitch_max)
+	elif onfloor and abs(velocity.x) > 20.0:
 		add_ripple(min(abs(velocity.x) / speed, 1.0) * run_ripple * delta)
 	
 	was_grounded = grounded
 	
 	_update_jelly(delta, grounded)
-	_update_audio(delta, jumped)
+	_update_move_sound(delta, grounded)
 
 func _update_jelly(delta: float, grounded: bool) -> void:
 	# ripples fade out over ripple_duration seconds

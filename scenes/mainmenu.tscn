@@ -1,21 +1,18 @@
 [gd_scene format=3 uid="uid://dp5xjbnngysre"]
 
-[ext_resource type="Script" uid="uid://ljb2xv3t755m" path="res://static_body_2d.gd" id="1_85riq"]
+[ext_resource type="Script" uid="uid://cd1wxoaopx1ag" path="res://scripts/planet.gd" id="1_4hago"]
 [ext_resource type="Texture2D" uid="uid://c7p7507kdt0rt" path="res://image assets/glow.png" id="2_wf3n4"]
 [ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://image assets/planet.png" id="3_h73c4"]
 [ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://audio/planet_menu.mp3" id="4_85riq"]
 [ext_resource type="Texture2D" uid="uid://b4lwj0hcwkwvy" path="res://image assets/settings.png" id="5_4hago"]
+[ext_resource type="Script" uid="uid://cs6c358iiq2ou" path="res://scripts/settings_in.gd" id="5_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://df2a0gm1xymeb" path="res://image assets/CREDITS.png" id="6_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://image assets/play button.png" id="7_kait0"]
-<<<<<<< Updated upstream
-[ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://play.gd" id="8_6pj40"]
-=======
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scripts/credits.gd" id="7_wf3n4"]
 [ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
 [ext_resource type="Script" uid="uid://cu4yvmr8d2hwq" path="res://scenes/sfx_volume.gd" id="13_gjjcl"]
 [ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scripts/music_volume.gd" id="14_kait0"]
->>>>>>> Stashed changes
 
 [sub_resource type="Curve" id="Curve_0e48y"]
 _limits = [-360.0, 360.0, 0.0, 1.0]
@@ -30,8 +27,10 @@ radius = 0.01
 [node name="Node2D" type="Node2D" unique_id=58521646]
 
 [node name="background" type="ColorRect" parent="." unique_id=179468768]
-offset_right = 1153.0
-offset_bottom = 663.0
+offset_left = -1.0
+offset_top = -23.0
+offset_right = 2978.0
+offset_bottom = 1471.0
 color = Color(0, 0, 0, 1)
 
 [node name="stars" type="CPUParticles2D" parent="." unique_id=1530533612]
@@ -53,10 +52,29 @@ angle_max = 720.0
 angle_curve = SubResource("Curve_0e48y")
 scale_amount_max = 5.0
 
-[node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
-position = Vector2(576, 345)
+[node name="stars2" type="CPUParticles2D" parent="." unique_id=416107422]
+position = Vector2(1984, -471.00003)
 scale = Vector2(400, 400)
-script = ExtResource("1_85riq")
+skew = 0.28797933
+amount = 200
+lifetime = 5.0
+preprocess = 8.41
+randomness = 1.0
+lifetime_randomness = 0.64
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector2(1, 4)
+spread = 180.0
+gravity = Vector2(220, 200)
+angle_min = -488.6
+angle_max = 720.0
+angle_curve = SubResource("Curve_0e48y")
+scale_amount_max = 5.0
+
+[node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
+position = Vector2(576, 324)
+scale = Vector2(400, 400)
+script = ExtResource("1_4hago")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="planet" unique_id=1939815446]
 shape = SubResource("CircleShape2D_mti6b")
@@ -72,7 +90,7 @@ mesh = SubResource("QuadMesh_62yky")
 texture = ExtResource("3_h73c4")
 
 [node name="menu music" type="AudioStreamPlayer2D" parent="." unique_id=1909027303]
-position = Vector2(-3.0000305, 1)
+position = Vector2(-441, -525)
 scale = Vector2(400, 400)
 skew = 0.28797925
 stream = ExtResource("4_85riq")
@@ -91,6 +109,7 @@ autowrap_mode = 3
 autowrap_trim_flags = 0
 clip_text = true
 expand_icon = true
+script = ExtResource("5_gjjcl")
 
 [node name="credits" type="Button" parent="." unique_id=535208277]
 offset_left = 172.0
@@ -103,12 +122,13 @@ autowrap_mode = 3
 autowrap_trim_flags = 0
 clip_text = true
 expand_icon = true
+script = ExtResource("7_wf3n4")
 
 [node name="play" type="Button" parent="." unique_id=1865689507]
-offset_left = 447.0
-offset_top = 219.0
-offset_right = 576.0
-offset_bottom = 346.5
+offset_left = 450.0
+offset_top = 198.0
+offset_right = 579.0
+offset_bottom = 325.5
 scale = Vector2(2, 2)
 size_flags_stretch_ratio = 0.0
 icon = ExtResource("7_kait0")
@@ -124,8 +144,6 @@ offset_right = 378.0
 offset_bottom = 200.0
 text = "EVIL PURPLE ALIEN STEALS YUOR FRIEND AND DEMANDS POWER SOTNES TO TURN ON YOU AND YOU LWK GOTTA FIGHT HIM"
 fit_content = true
-<<<<<<< Updated upstream
-=======
 
 [node name="Credits" type="Node2D" parent="." unique_id=635934664]
 position = Vector2(1734, 24)
@@ -252,8 +270,7 @@ offset_top = 323.0
 offset_right = 667.0
 offset_bottom = 374.69873
 bbcode_enabled = true
-text = "[center]0.0[/center]
-"
+text = "[center]0.0[/center]"
 
 [node name="title" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=1754087944]
 offset_left = 476.0
@@ -262,4 +279,3 @@ offset_right = 676.0
 offset_bottom = 297.0
 bbcode_enabled = true
 text = "[center]Music Volume[/center]"
->>>>>>> Stashed changes

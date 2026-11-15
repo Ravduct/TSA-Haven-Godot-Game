@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://bowkv52chqd7c"]
+
+[ext_resource type="Texture2D" uid="uid://bckxn8qwqif7k" path="res://image assets/sky.png" id="1_ut440"]
+[ext_resource type="Texture2D" uid="uid://7cbw1mm2m1u1" path="res://image assets/jelly_mountains.png" id="2_ut440"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ut440"]
+load_path = "res://.godot/imported/hills.png-46021064dcbb56bf94ee53c8460acf79.ctex"
+
+[node name="backgound" type="Parallax2D" unique_id=1550976510]
+scale = Vector2(1.7, 1.7)
+scroll_scale = Vector2(0.35, 0.35)
+scroll_offset = Vector2(0, -300)
+repeat_size = Vector2(2324, 0)
+repeat_times = 100
+metadata/_edit_vertical_guides_ = [-1065.0]
+
+[node name="sky" type="Sprite2D" parent="." unique_id=1621335446]
+position = Vector2(267, 179)
+scale = Vector2(2.324, 2.324)
+texture = ExtResource("1_ut440")
+
+[node name="jelly mountains" type="Sprite2D" parent="." unique_id=1027411236]
+position = Vector2(264, 395)
+scale = Vector2(1.1358025, 1.1321121)
+texture = ExtResource("2_ut440")
+offset = Vector2(0, -60)
+
+[node name="hills" type="Sprite2D" parent="." unique_id=1068387695]
+position = Vector2(-0.025, 400.045)
+scale = Vector2(1.1449664, 0.95834196)
+texture = SubResource("CompressedTexture2D_ut440")

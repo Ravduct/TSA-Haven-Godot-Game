@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed: int = 150
+@export var speed: int = 200
 
 enum direction {
 	UP,
@@ -33,7 +33,6 @@ func _physics_process(delta: float) -> void:
 	var collision = move_and_collide(velocity * delta)
 	
 	if collision:
-		var collider = collision.get_collider()
 		if movingdir == direction.COUNTERCLOCKWISE:
 			match dir:
 				direction.DOWN:
