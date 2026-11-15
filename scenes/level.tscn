@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://d0rh7bjs24ndc"]
+[gd_scene format=3 uid="uid://curlaob3cq6jt"]
+
+[ext_resource type="Texture2D" uid="uid://b5vqn7cpyhnpv" path="res://image assets/astro.png" id="1_2q6dc"]
 
 [ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scenes/path_follow_2d.gd" id="1_2q6dc"]
 [ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scenes/slime.gd" id="2_w8frs"]
@@ -8,9 +10,9 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bkp3o"]
-size = Vector2(1374, 123)
+size = Vector2(1227, 159)
 
-[sub_resource type="CanvasTexture" id="CanvasTexture_bkp3o"]
+[sub_resource type="QuadMesh" id="QuadMesh_4kxuq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mx8sn"]
 size = Vector2(2125.25, 123)
@@ -81,8 +83,6 @@ func _physics_process(delta: float):
 		respawn()
 "
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l4wpc"]
 size = Vector2(71, 138)
 
@@ -113,14 +113,22 @@ collision_layer = 5
 
 [node name="hitbox" type="CollisionShape2D" parent="ground" unique_id=433314589]
 material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(-475, 10)
+position = Vector2(578.5, 77.5)
 shape = SubResource("RectangleShape2D_bkp3o")
 debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
 
-[node name="sprite" type="Sprite2D" parent="ground/hitbox" unique_id=1877749373]
-position = Vector2(3.7499657, 0)
-scale = Vector2(1344.9999, 123.000015)
-texture = SubResource("CanvasTexture_bkp3o")
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D" unique_id=1688543376]
+position = Vector2(572.49994, 65.24999)
+scale = Vector2(1220.9998, 131.49998)
+mesh = SubResource("QuadMesh_4kxuq")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=1986463866]
+position = Vector2(-5, 543)
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D2" unique_id=1941048806]
+position = Vector2(572.49994, 65.24999)
+scale = Vector2(1220.9998, 131.49998)
+mesh = SubResource("QuadMesh_4kxuq")
 
 [node name="hitbox2" type="CollisionShape2D" parent="ground" unique_id=870870036]
 material = SubResource("CanvasItemMaterial_y32ns")
@@ -160,78 +168,11 @@ texture = SubResource("CanvasTexture_ppgk2")
 [node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
 script = SubResource("GDScript_7olc6")
 
-[node name="hitbox" type="CollisionShape2D" parent="player" unique_id=30282243]
-material = SubResource("CanvasItemMaterial_wtcfe")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=30282243]
+position = Vector2(42, 76)
 shape = SubResource("RectangleShape2D_l4wpc")
 
-[node name="sprite" type="Sprite2D" parent="player/hitbox" unique_id=217158233]
-scale = Vector2(84.49999, 147.5)
-texture = SubResource("CanvasTexture_bkp3o")
-
-[node name="camera" type="Camera2D" parent="player" unique_id=740702037]
-zoom = Vector2(0.5, 0.5)
-position_smoothing_enabled = true
-
-[node name="hurtbox" type="Area2D" parent="player" unique_id=1156314438]
-scale = Vector2(5.0000005, 7.482115)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="player/hurtbox" unique_id=467293857]
-shape = SubResource("RectangleShape2D_1vrpp")
-
-[node name="path" type="Path2D" parent="." unique_id=511733077]
-position = Vector2(905.5854, 384.21844)
-scale = Vector2(2.5365853, 0.21501707)
-curve = SubResource("Curve2D_rd3vj")
-
-[node name="follow" type="PathFollow2D" parent="path" unique_id=1170533802]
-position = Vector2(-25.461548, -628.87305)
-rotation = 0.2067315
-scale = Vector2(0.39423078, 4.6507936)
-rotates = false
-cubic_interp = false
-loop = false
-script = ExtResource("1_2q6dc")
-
-[node name="remoteTransform" type="RemoteTransform2D" parent="path/follow" unique_id=1814506669]
-remote_path = NodePath("../../platform")
-update_rotation = false
-update_scale = false
-
-[node name="platform" type="AnimatableBody2D" parent="path" unique_id=1992280718]
-position = Vector2(-25.461548, -628.87305)
-
-[node name="hitbox" type="CollisionShape2D" parent="path/platform" unique_id=462692707]
-material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(0, -7.096548e-05)
-scale = Vector2(0.39423075, 4.6507936)
-shape = SubResource("RectangleShape2D_2q6dc")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="sprite" type="Sprite2D" parent="path/platform/hitbox" unique_id=1725613151]
-scale = Vector2(544, 109.5)
-texture = SubResource("CanvasTexture_w7c3h")
-
-[node name="area" type="Area2D" parent="." unique_id=108581321]
-position = Vector2(206, 0)
-collision_layer = 2
-script = ExtResource("4_mx8sn")
-
-[node name="hitbox" type="CollisionShape2D" parent="area" unique_id=1308490715]
-position = Vector2(-249.5, 306.5)
-shape = SubResource("RectangleShape2D_nmbfl")
-debug_color = Color(1, 1, 0, 0.41960785)
-
-[node name="slime" type="CharacterBody2D" parent="area" unique_id=2014866072]
-position = Vector2(15, 521)
-collision_mask = 6
-script = ExtResource("2_w8frs")
-metadata/type = "slime"
-
-[node name="hitbox" type="CollisionShape2D" parent="area/slime" unique_id=537911198]
-scale = Vector2(5, 5)
-shape = SubResource("RectangleShape2D_7olc6")
-
-[node name="sprite" type="Sprite2D" parent="area/slime/hitbox" unique_id=187716164]
-position = Vector2(0.09999776, 0.09999776)
-scale = Vector2(0.04, 0.04)
-texture = ExtResource("3_mx8sn")
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=217158233]
+position = Vector2(44.703236, 82.153046)
+scale = Vector2(0.25883865, 0.2833878)
+texture = ExtResource("1_2q6dc")
