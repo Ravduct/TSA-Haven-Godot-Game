@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://curlaob3cq6jt"]
 
-[ext_resource type="Texture2D" uid="uid://b5vqn7cpyhnpv" path="res://image assets/astro.png" id="1_2q6dc"]
-[ext_resource type="Texture2D" uid="uid://pc6qfdlfeqr7" path="res://image assets/jelly.png" id="1_w7c3h"]
+[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/path_follow_2d.gd" id="1_2q6dc"]
 [ext_resource type="Texture2D" uid="uid://lhdym8a0bchm" path="res://image assets/bubble.png" id="2_ppgk2"]
-[ext_resource type="Shader" uid="uid://cp773cey4isgd" path="res://new_shader.gdshader" id="3_w8frs"]
-[ext_resource type="Shader" uid="uid://4auq1hekdte2" path="res://jellojiggle.gdshader" id="4_2r41h"]
+[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scripts/slime.gd" id="2_w8frs"]
+[ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
+[ext_resource type="Shader" uid="uid://cp773cey4isgd" path="res://shaders/new_shader.gdshader" id="3_w8frs"]
+[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_klq6b"]
 shader = ExtResource("3_w8frs")
@@ -13,29 +14,18 @@ shader_parameter/deep_teal = Color(0.02, 0.35, 0.45, 0.92)
 shader_parameter/soft_glow = Color(0.45, 0.95, 0.85, 1)
 shader_parameter/wobble_speed = 1.8
 shader_parameter/wave_height = 0.05
-[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scenes/path_follow_2d.gd" id="1_2q6dc"]
-[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scenes/slime.gd" id="2_w8frs"]
-[ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
-[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scenes/enemy area.gd" id="4_mx8sn"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
 
 [sub_resource type="Gradient" id="Gradient_b121j"]
 offsets = PackedFloat32Array(0, 0.75123155, 0.93842363, 0.99753696)
 colors = PackedColorArray(1, 1, 1, 1, 0.6666667, 0.8509804, 0.8535948, 0.6666667, 0.20246914, 0.6434568, 0.64971197, 0.20246914, 0, 0.5529412, 0.56078434, 0)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_8c41q"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_olg7q"]
-size = Vector2(322, 209)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bkp3o"]
+size = Vector2(1374, 123)
 
-[sub_resource type="QuadMesh" id="QuadMesh_t1rx8"]
+[sub_resource type="CanvasTexture" id="CanvasTexture_bkp3o"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8iemx"]
-render_priority = 0
-shader = ExtResource("4_2r41h")
-
-[sub_resource type="GDScript" id="GDScript_64w2a"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mx8sn"]
 size = Vector2(2125.25, 123)
 
@@ -105,7 +95,9 @@ func _physics_process(delta: float):
 		respawn()
 "
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fpun6"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l4wpc"]
 size = Vector2(71, 138)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vrpp"]
@@ -126,19 +118,17 @@ size = Vector2(1115, 701)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7olc6"]
 
-[node name="Node2D" type="Node2D" unique_id=487297017]
+[node name="Node2D" type="Node2D" unique_id=1801803192]
 
-[node name="Node2D" type="Node2D" parent="." unique_id=1801803192]
-
-[node name="ColorRect" type="ColorRect" parent="Node2D" unique_id=40623188]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=40623188]
 material = SubResource("ShaderMaterial_klq6b")
-offset_left = 156.0
-offset_top = 550.0
-offset_right = 880.0
-offset_bottom = 744.0
+offset_left = 1732.0
+offset_top = 582.0
+offset_right = 2456.0
+offset_bottom = 776.0
 metadata/_edit_use_anchors_ = true
 
-[node name="bubbles" type="CPUParticles2D" parent="Node2D/ColorRect" unique_id=1065649557]
+[node name="bubbles" type="CPUParticles2D" parent="ColorRect" unique_id=1065649557]
 position = Vector2(296, 220)
 amount = 20
 texture = ExtResource("2_ppgk2")
@@ -152,13 +142,6 @@ scale_amount_min = 0.01
 scale_amount_max = 0.1
 color_ramp = SubResource("Gradient_b121j")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="Node2D" unique_id=883296298]
-position = Vector2(-5, 543)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D" unique_id=1955293372]
-material = SubResource("CanvasItemMaterial_8c41q")
-position = Vector2(988, 111)
-shape = SubResource("RectangleShape2D_olg7q")
 [node name="ground" type="StaticBody2D" parent="." unique_id=609733895]
 position = Vector2(1336, 572)
 rotation = 1.5707964
@@ -166,38 +149,15 @@ collision_layer = 5
 
 [node name="hitbox" type="CollisionShape2D" parent="ground" unique_id=433314589]
 material = SubResource("CanvasItemMaterial_y32ns")
-position = Vector2(578.5, 77.5)
+position = Vector2(-442, 59.000046)
 shape = SubResource("RectangleShape2D_bkp3o")
 debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Node2D/StaticBody2D" unique_id=943718655]
-position = Vector2(989, 102)
-scale = Vector2(334.9999, 209.50002)
-mesh = SubResource("QuadMesh_t1rx8")
-texture = ExtResource("1_w7c3h")
+[node name="sprite" type="Sprite2D" parent="ground/hitbox" unique_id=1877749373]
+position = Vector2(3.7499657, 0)
+scale = Vector2(1344.9999, 123.000015)
+texture = SubResource("CanvasTexture_bkp3o")
 
-[node name="StaticBody2D2" type="StaticBody2D" parent="Node2D" unique_id=2068623677]
-position = Vector2(-10, 1086)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/StaticBody2D2" unique_id=1393941153]
-material = SubResource("CanvasItemMaterial_8c41q")
-position = Vector2(51, -434)
-shape = SubResource("RectangleShape2D_olg7q")
-debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Node2D/StaticBody2D2" unique_id=434799542]
-material = SubResource("ShaderMaterial_8iemx")
-position = Vector2(59, -435)
-scale = Vector2(334.9999, 209.50002)
-mesh = SubResource("QuadMesh_t1rx8")
-texture = ExtResource("1_w7c3h")
-
-[node name="Node2D" type="Node2D" parent="Node2D" unique_id=743181966]
-position = Vector2(293, 565)
-
-[node name="CharacterBody2D" type="CharacterBody2D" parent="Node2D" unique_id=321510995]
-position = Vector2(19, 376)
-script = SubResource("GDScript_64w2a")
 [node name="hitbox2" type="CollisionShape2D" parent="ground" unique_id=870870036]
 material = SubResource("CanvasItemMaterial_y32ns")
 position = Vector2(-474.9999, 1976)
@@ -236,11 +196,78 @@ texture = SubResource("CanvasTexture_ppgk2")
 [node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
 script = SubResource("GDScript_7olc6")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/CharacterBody2D" unique_id=99632106]
-position = Vector2(42, 76)
-shape = SubResource("RectangleShape2D_fpun6")
+[node name="hitbox" type="CollisionShape2D" parent="player" unique_id=30282243]
+material = SubResource("CanvasItemMaterial_wtcfe")
+shape = SubResource("RectangleShape2D_l4wpc")
 
-[node name="Sprite2D" type="Sprite2D" parent="Node2D/CharacterBody2D" unique_id=1845799805]
-position = Vector2(44.703236, 82.153046)
-scale = Vector2(0.25883865, 0.2833878)
-texture = ExtResource("1_2q6dc")
+[node name="sprite" type="Sprite2D" parent="player/hitbox" unique_id=217158233]
+scale = Vector2(84.49999, 147.5)
+texture = SubResource("CanvasTexture_bkp3o")
+
+[node name="camera" type="Camera2D" parent="player" unique_id=740702037]
+zoom = Vector2(0.5, 0.5)
+position_smoothing_enabled = true
+
+[node name="hurtbox" type="Area2D" parent="player" unique_id=1156314438]
+scale = Vector2(5.0000005, 7.482115)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="player/hurtbox" unique_id=467293857]
+shape = SubResource("RectangleShape2D_1vrpp")
+
+[node name="path" type="Path2D" parent="." unique_id=511733077]
+position = Vector2(905.5854, 384.21844)
+scale = Vector2(2.5365853, 0.21501707)
+curve = SubResource("Curve2D_rd3vj")
+
+[node name="follow" type="PathFollow2D" parent="path" unique_id=1170533802]
+position = Vector2(-25.461548, -628.87305)
+rotation = 0.2067315
+scale = Vector2(0.39423078, 4.6507936)
+rotates = false
+cubic_interp = false
+loop = false
+script = ExtResource("1_2q6dc")
+
+[node name="remoteTransform" type="RemoteTransform2D" parent="path/follow" unique_id=1814506669]
+remote_path = NodePath("../../platform")
+update_rotation = false
+update_scale = false
+
+[node name="platform" type="AnimatableBody2D" parent="path" unique_id=1992280718]
+position = Vector2(-25.461548, -628.87305)
+
+[node name="hitbox" type="CollisionShape2D" parent="path/platform" unique_id=462692707]
+material = SubResource("CanvasItemMaterial_y32ns")
+position = Vector2(0, -7.096548e-05)
+scale = Vector2(0.39423075, 4.6507936)
+shape = SubResource("RectangleShape2D_2q6dc")
+debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
+
+[node name="sprite" type="Sprite2D" parent="path/platform/hitbox" unique_id=1725613151]
+scale = Vector2(544, 109.5)
+texture = SubResource("CanvasTexture_w7c3h")
+
+[node name="area" type="Area2D" parent="." unique_id=108581321]
+position = Vector2(206, 0)
+collision_layer = 2
+script = ExtResource("4_mx8sn")
+
+[node name="hitbox" type="CollisionShape2D" parent="area" unique_id=1308490715]
+position = Vector2(-249.5, 306.5)
+shape = SubResource("RectangleShape2D_nmbfl")
+debug_color = Color(1, 1, 0, 0.41960785)
+
+[node name="slime" type="CharacterBody2D" parent="area" unique_id=2014866072]
+position = Vector2(15, 521)
+collision_mask = 6
+script = ExtResource("2_w8frs")
+metadata/type = "slime"
+
+[node name="hitbox" type="CollisionShape2D" parent="area/slime" unique_id=537911198]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_7olc6")
+
+[node name="sprite" type="Sprite2D" parent="area/slime/hitbox" unique_id=187716164]
+position = Vector2(0.09999776, 0.09999776)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("3_mx8sn")
