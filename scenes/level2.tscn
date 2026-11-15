@@ -1,26 +1,26 @@
-[gd_scene format=4 uid="uid://curlaob3cq6jt"]
+[gd_scene format=4 uid="uid://ctlus4ya1gj2k"]
 
-[ext_resource type="Texture2D" uid="uid://lhdym8a0bchm" path="res://image assets/bubble.png" id="2_ppgk2"]
-[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scripts/slime.gd" id="2_w8frs"]
-[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/follow.gd" id="3_64w2a"]
-[ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
-[ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="3_ppgk2"]
-[ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_fpun6"]
-[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
-[ext_resource type="Texture2D" uid="uid://cg3dbf4eu85f4" path="res://image assets/green_tileset.png" id="5_ppgk2"]
-[ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
-[ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_olg7q"]
-[ext_resource type="Texture2D" uid="uid://dgbd2ixc1k3r8" path="res://image assets/2026_11_14_0u5_Kleki.png" id="9_olg7q"]
-[ext_resource type="Script" uid="uid://c55kdhwdlo15d" path="res://scripts/checkpoint.gd" id="10_olg7q"]
-[ext_resource type="Texture2D" uid="uid://ccnbdlv1c1mve" path="res://image assets/jellofull.png" id="13_82cfe"]
-[ext_resource type="Texture2D" uid="uid://2oh1um0mb6ua" path="res://image assets/chillslime.png" id="13_wc255"]
-[ext_resource type="Texture2D" uid="uid://cfcrw4qwc48k7" path="res://image assets/jell1.png" id="14_gunhw"]
-[ext_resource type="Texture2D" uid="uid://doo26fljh7j1w" path="res://image assets/jell2.png" id="15_8gofh"]
-[ext_resource type="Texture2D" uid="uid://bp5rrgnfaa15j" path="res://image assets/jell3.png" id="16_h6wmr"]
-[ext_resource type="Texture2D" uid="uid://ogjitjnffyo3" path="res://image assets/jello_empty.png" id="17_pqd0y"]
-[ext_resource type="PackedScene" uid="uid://bowkv52chqd7c" path="res://scenes/parallax_2d.tscn" id="19_gunhw"]
-[ext_resource type="Script" uid="uid://cbepyvrc1w4ky" path="res://scenes/progress_bar.gd" id="20_8gofh"]
-[ext_resource type="Script" uid="uid://05cjtwa7fklp" path="res://scenes/checkpoint_saved.gd" id="21_h6wmr"]
+[ext_resource type="Texture2D" uid="uid://lhdym8a0bchm" path="res://image assets/bubble.png" id="1_s4es8"]
+[ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="2_63e4f"]
+[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/follow.gd" id="3_y6lc1"]
+[ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_ekhvm"]
+[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="5_nflru"]
+[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scripts/slime.gd" id="6_ikw2v"]
+[ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="7_cgqhq"]
+[ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="8_ttvjw"]
+[ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="9_ac7c3"]
+[ext_resource type="Texture2D" uid="uid://dgbd2ixc1k3r8" path="res://image assets/2026_11_14_0u5_Kleki.png" id="10_qo7hg"]
+[ext_resource type="Texture2D" uid="uid://cg3dbf4eu85f4" path="res://image assets/green_tileset.png" id="11_odav0"]
+[ext_resource type="Script" uid="uid://c55kdhwdlo15d" path="res://scripts/checkpoint.gd" id="12_3xffc"]
+[ext_resource type="Texture2D" uid="uid://ccnbdlv1c1mve" path="res://image assets/jellofull.png" id="13_icuov"]
+[ext_resource type="Texture2D" uid="uid://cfcrw4qwc48k7" path="res://image assets/jell1.png" id="14_xnv6s"]
+[ext_resource type="Texture2D" uid="uid://doo26fljh7j1w" path="res://image assets/jell2.png" id="15_6lk74"]
+[ext_resource type="Texture2D" uid="uid://bp5rrgnfaa15j" path="res://image assets/jell3.png" id="16_wso6h"]
+[ext_resource type="Texture2D" uid="uid://ogjitjnffyo3" path="res://image assets/jello_empty.png" id="17_4vsvd"]
+[ext_resource type="Texture2D" uid="uid://2oh1um0mb6ua" path="res://image assets/chillslime.png" id="18_ehxya"]
+[ext_resource type="PackedScene" uid="uid://bowkv52chqd7c" path="res://scenes/parallax_2d.tscn" id="19_tn25f"]
+[ext_resource type="Script" uid="uid://cbepyvrc1w4ky" path="res://scripts/progress_bar.gd" id="20_5b1db"]
+[ext_resource type="Script" uid="uid://05cjtwa7fklp" path="res://scripts/checkpoint_saved.gd" id="21_etc3t"]
 
 [sub_resource type="Shader" id="Shader_8c41q"]
 code = "shader_type canvas_item;
@@ -104,7 +104,7 @@ size = Vector2(1115, 701)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7olc6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_2r41h"]
-texture = ExtResource("5_ppgk2")
+texture = ExtResource("11_odav0")
 texture_region_size = Vector2i(100, 100)
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
@@ -134,19 +134,19 @@ size = Vector2(326, 148)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("13_82cfe")
+"texture": ExtResource("13_icuov")
 }, {
 "duration": 1.0,
-"texture": ExtResource("14_gunhw")
+"texture": ExtResource("14_xnv6s")
 }, {
 "duration": 1.0,
-"texture": ExtResource("15_8gofh")
+"texture": ExtResource("15_6lk74")
 }, {
 "duration": 1.0,
-"texture": ExtResource("16_h6wmr")
+"texture": ExtResource("16_wso6h")
 }, {
 "duration": 1.0,
-"texture": ExtResource("17_pqd0y")
+"texture": ExtResource("17_4vsvd")
 }],
 "loop": 0,
 "name": &"default",
@@ -166,7 +166,7 @@ metadata/_edit_use_anchors_ = true
 [node name="bubbles" type="CPUParticles2D" parent="ColorRect" unique_id=1065649557]
 position = Vector2(296, 220)
 amount = 20
-texture = ExtResource("2_ppgk2")
+texture = ExtResource("1_s4es8")
 preprocess = 1.03
 explosiveness = 0.07
 randomness = 0.54
@@ -178,7 +178,7 @@ scale_amount_max = 0.1
 color_ramp = SubResource("Gradient_b121j")
 
 [node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
-script = ExtResource("3_ppgk2")
+script = ExtResource("2_63e4f")
 
 [node name="hitbox" type="CollisionShape2D" parent="player" unique_id=30282243]
 material = SubResource("CanvasItemMaterial_wtcfe")
@@ -210,7 +210,7 @@ scale = Vector2(0.39423078, 4.6507936)
 rotates = false
 cubic_interp = false
 loop = false
-script = ExtResource("3_64w2a")
+script = ExtResource("3_y6lc1")
 
 [node name="remoteTransform" type="RemoteTransform2D" parent="path/follow" unique_id=1814506669]
 remote_path = NodePath("../../platform")
@@ -219,7 +219,7 @@ update_scale = false
 
 [node name="platform" type="AnimatableBody2D" parent="path" unique_id=1992280718]
 position = Vector2(-25.461609, -628.87317)
-script = ExtResource("4_fpun6")
+script = ExtResource("4_ekhvm")
 
 [node name="hitbox" type="CollisionShape2D" parent="path/platform" unique_id=462692707]
 material = SubResource("CanvasItemMaterial_y32ns")
@@ -235,7 +235,7 @@ texture = SubResource("CanvasTexture_w7c3h")
 [node name="area" type="Area2D" parent="." unique_id=108581321]
 position = Vector2(-370, 0)
 collision_layer = 2
-script = ExtResource("4_mx8sn")
+script = ExtResource("5_nflru")
 
 [node name="hitbox" type="CollisionShape2D" parent="area" unique_id=1308490715]
 position = Vector2(-249.5, 306.5)
@@ -245,7 +245,7 @@ debug_color = Color(1, 1, 0, 0.41960785)
 [node name="slime" type="CharacterBody2D" parent="area" unique_id=2014866072]
 position = Vector2(29, 564)
 collision_mask = 6
-script = ExtResource("2_w8frs")
+script = ExtResource("6_ikw2v")
 metadata/type = "red"
 
 [node name="hitbox" type="CollisionShape2D" parent="area/slime" unique_id=537911198]
@@ -255,12 +255,12 @@ shape = SubResource("RectangleShape2D_7olc6")
 [node name="sprite" type="Sprite2D" parent="area/slime/hitbox" unique_id=187716164]
 position = Vector2(0.09999776, 0.09999776)
 scale = Vector2(0.04, 0.04)
-texture = ExtResource("3_mx8sn")
+texture = ExtResource("7_cgqhq")
 
 [node name="area2" type="Area2D" parent="." unique_id=1144792476]
 position = Vector2(2292, 0)
 collision_layer = 2
-script = ExtResource("7_8c41q")
+script = ExtResource("8_ttvjw")
 
 [node name="hitbox" type="CollisionShape2D" parent="area2" unique_id=1912547411]
 position = Vector2(-249.5, 306.5)
@@ -270,7 +270,7 @@ debug_color = Color(1, 1, 0, 0.41960785)
 [node name="slime" type="CharacterBody2D" parent="area2" unique_id=1753122061]
 position = Vector2(29, 564)
 collision_mask = 6
-script = ExtResource("8_olg7q")
+script = ExtResource("9_ac7c3")
 metadata/type = "green"
 
 [node name="hitbox" type="CollisionShape2D" parent="area2/slime" unique_id=2122671951]
@@ -280,7 +280,7 @@ shape = SubResource("RectangleShape2D_7olc6")
 [node name="sprite" type="Sprite2D" parent="area2/slime/hitbox" unique_id=1685669662]
 position = Vector2(0.19999777, 0.19999777)
 scale = Vector2(0.04, 0.04)
-texture = ExtResource("9_olg7q")
+texture = ExtResource("10_qo7hg")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=33805410]
 position = Vector2(2095, -385)
@@ -292,7 +292,7 @@ position = Vector2(476, 185)
 
 [node name="checkpoint" type="Area2D" parent="." unique_id=308182329]
 position = Vector2(1218, 359)
-script = ExtResource("10_olg7q")
+script = ExtResource("12_3xffc")
 
 [node name="hitbox" type="CollisionShape2D" parent="checkpoint" unique_id=456030928]
 position = Vector2(0, 188)
@@ -316,9 +316,9 @@ shape = SubResource("RectangleShape2D_7olc6")
 [node name="sprite" type="Sprite2D" parent="slime/hitbox" unique_id=881869810]
 position = Vector2(0.19999777, -0.40000224)
 scale = Vector2(0.04, 0.04)
-texture = ExtResource("13_wc255")
+texture = ExtResource("18_ehxya")
 
-[node name="backgound" parent="." unique_id=1550976510 instance=ExtResource("19_gunhw")]
+[node name="backgound" parent="." unique_id=1550976510 instance=ExtResource("19_tn25f")]
 z_index = -10
 scroll_offset = Vector2(-492.99994, -400.99997)
 
@@ -330,7 +330,7 @@ offset_top = 30.0
 offset_right = 1136.0
 offset_bottom = 102.0
 value = 50.0
-script = ExtResource("20_8gofh")
+script = ExtResource("20_5b1db")
 
 [node name="checkpointSaved" type="RichTextLabel" parent="CanvasLayer" unique_id=929566961]
 offset_left = 356.0
@@ -340,7 +340,7 @@ offset_bottom = 195.0
 bbcode_enabled = true
 text = "[color=green][font_size=50]Checkpoint Saved[/font_size][/color]"
 horizontal_alignment = 1
-script = ExtResource("21_h6wmr")
+script = ExtResource("21_etc3t")
 
 [node name="Timer" type="Timer" parent="CanvasLayer/checkpointSaved" unique_id=345321354]
 
