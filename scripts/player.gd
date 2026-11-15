@@ -312,6 +312,7 @@ func _physics_process(delta: float):
 					velocity.y = last_v.y * -bounce * mul
 				else:
 					velocity.x = last_v.x * -bounce * mul
+					$boing.play()
 	if abs(velocity.y) < 0.1 && falling < 1:
 		onfloor = true
 	

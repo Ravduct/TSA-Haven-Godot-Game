@@ -10,6 +10,7 @@ func _ready():
 	respawnPoint = get_node("/root/Node2D/respawn")
 	jello = get_node("hitbox/jello")
 	body_entered.connect(on_hit)
+	$"hitbox/jello".frame_changed.connect(on_frame)
 	
 func on_hit(node: Node):
 	if node != player || !active: return
@@ -20,3 +21,6 @@ func on_hit(node: Node):
 	checkpoint.checkout()
 	
 	jello.play()
+	
+func on_frame():
+	get_node("Bite" + str(randi_range(1, 3))).play()

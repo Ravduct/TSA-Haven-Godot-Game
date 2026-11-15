@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://bhbs1p05mot41"]
+
+[ext_resource type="Texture2D" uid="uid://cw5ohyghum6y4" path="res://image assets/end1.png" id="1_mwn6m"]
+[ext_resource type="Script" uid="uid://brgjtt24ocffc" path="res://scenes/end.gd" id="1_p7m4f"]
+[ext_resource type="AudioStream" uid="uid://cpn5egpje0l18" path="res://music/bus.mp3" id="3_bvfni"]
+
+[node name="Node2D" type="Node2D" unique_id=824481200]
+script = ExtResource("1_p7m4f")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1966336157]
+custom_minimum_size = Vector2(1152, 648)
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = ExtResource("1_mwn6m")
+expand_mode = 1
+
+[node name="Bus" type="AudioStreamPlayer" parent="." unique_id=1922808870]
+stream = ExtResource("3_bvfni")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=453116877]
+offset_right = 1162.0
+offset_bottom = 650.0
+color = Color(0, 0, 0, 0)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=90316927]
+offset_top = 656.0
+offset_right = 1158.0
+offset_bottom = 1792.0
+theme_override_font_sizes/normal_font_size = 30
+theme_override_font_sizes/bold_italics_font_size = 30
+theme_override_font_sizes/italics_font_size = 30
+text = "Credits:
+Kyle Nham (koyleboy)
+Main Scripter
+Debugger
+
+Riyad Zahraoui (dum_nub)
+Designer
+Vfx & Sfx
+Scripter
+
+Huu Thang Tu (Ravduct)
+Music Producer
+Scripter
+
+Made with Godot
+
+Made in 24 hours for Hackathon Haven
+
+Thanks for playing!"
+fit_content = true
+horizontal_alignment = 1
+
+[node name="back" type="Button" parent="." unique_id=321603602]
+offset_top = 573.0
+offset_right = 90.0
+offset_bottom = 648.0
+text = "skip"
