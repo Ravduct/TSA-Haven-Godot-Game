@@ -22,10 +22,8 @@ radius = 0.01
 [node name="Node2D" type="Node2D" unique_id=58521646]
 
 [node name="background" type="ColorRect" parent="." unique_id=179468768]
-offset_left = -1.0
-offset_top = -23.0
-offset_right = 1465.0
-offset_bottom = 675.0
+offset_right = 1153.0
+offset_bottom = 663.0
 color = Color(0, 0, 0, 1)
 
 [node name="stars" type="CPUParticles2D" parent="." unique_id=1530533612]
@@ -66,7 +64,7 @@ mesh = SubResource("QuadMesh_62yky")
 texture = ExtResource("3_h73c4")
 
 [node name="menu music" type="AudioStreamPlayer2D" parent="." unique_id=1909027303]
-position = Vector2(-441, -525)
+position = Vector2(-3.0000305, 1)
 scale = Vector2(400, 400)
 skew = 0.28797925
 stream = ExtResource("4_85riq")
