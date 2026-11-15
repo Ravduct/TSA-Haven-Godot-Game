@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://curlaob3cq6jt"]
+
+<<<<<<< Updated upstream
+[ext_resource type="Texture2D" uid="uid://b5vqn7cpyhnpv" path="res://image assets/astro.png" id="1_2q6dc"]
+
+[ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scenes/path_follow_2d.gd" id="1_2q6dc"]
+[ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scenes/slime.gd" id="2_w8frs"]
+[ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
+[ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scenes/enemy area.gd" id="4_mx8sn"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bkp3o"]
+size = Vector2(1227, 159)
+
+[sub_resource type="QuadMesh" id="QuadMesh_4kxuq"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mx8sn"]
+size = Vector2(2125.25, 123)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_ppgk2"]
+
+[sub_resource type="GDScript" id="GDScript_7olc6"]
+resource_name = "player"
+script/source = "extends CharacterBody2D
+
+@export var speed: int = 100
+@export var jumpPower: int = 500
+@export var friction: float = 0.8
+@export var air_res: float = 0.99
+@export var bounce: float = 0.4
+
+var gravity: int = ProjectSettings.get_setting(\"physics/2d/default_gravity\")
+var last_vy: int
+var cartoon_buildup: int = 0
+var boingboing: bool = true
+
+func _ready():
+	$hurtbox.body_entered.connect(on_hit)
+
+func respawn() -> void:
+	position = Vector2.ZERO
+	velocity = Vector2.ZERO
+
+func parentPlatform(platform: Node):
+	reparent(platform)
+	boingboing = false
+
+func resetParent():
+	reparent($Node2D)
+	boingboing = true
+	
+func on_hit(body: Node):
+	if body.name != \"slime\": return
+	respawn()
+
+func _process(_float):
+	bounce = 0.2 if Input.is_action_pressed(\"down\") else 0.4
+	speed = 200 if Input.is_action_pressed(\"run\") else 100
+
+func _physics_process(delta: float):
+	var direction := int(Input.is_action_pressed(\"right\")) - int(Input.is_action_pressed(\"left\"))
+	if !is_on_floor():
+		velocity.y += gravity * delta
+		velocity.x *= air_res
+		if direction:
+			velocity.x += direction * (speed / 10)
+	else:
+		if boingboing: velocity.y = floor(last_vy * -bounce)
+		if Input.is_action_pressed(\"jump\"):
+			velocity.y -= jumpPower
+		
+		if direction:
+			velocity.x += direction * speed
+		
+		velocity.x *= friction
+	
+	velocity.x = roundi(velocity.x)
+	velocity.y = roundi(velocity.y)
+	last_vy = velocity.y
+	move_and_slide()
+	
+	if position.y > 1500:
+		respawn()
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l4wpc"]
+size = Vector2(71, 138)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1vrpp"]
+
+[sub_resource type="Curve2D" id="Curve2D_rd3vj"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -25.461548, -628.87305, 0, 0, 0, 0, -112.58656, 240.82532, 0, 0, 0, 0, -191.03848, -1182.3175)
+}
+point_count = 3
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2q6dc"]
+size = Vector2(543, 109.5)
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_w7c3h"]
+=======
+[ext_resource type="Script" uid="uid://d1o88nhk7kcq3" path="res://scripts/green_area.gd" id="7_t1rx8"]
+[ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_8iemx"]
+[ext_resource type="Script" uid="uid://c55kdhwdlo15d" path="res://scripts/checkpoint.gd" id="8_b121j"]
+[ext_resource type="Texture2D" uid="uid://0cgdvq4petjs" path="res://image assets/yellow_happy.png" id="9_64w2a"]
+[ext_resource type="Texture2D" uid="uid://2oh1um0mb6ua" path="res://image assets/chillslime.png" id="11_t1rx8"]
+>>>>>>> Stashed changes
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nmbfl"]
+size = Vector2(1115, 701)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7olc6"]
+
+<<<<<<< Updated upstream
+[node name="Node2D" type="Node2D" unique_id=487297017]
+
+[node name="ground" type="StaticBody2D" parent="." unique_id=609733895]
+position = Vector2(1336, 572)
+rotation = 1.5707964
+collision_layer = 5
+
+[node name="hitbox" type="CollisionShape2D" parent="ground" unique_id=433314589]
+material = SubResource("CanvasItemMaterial_y32ns")
+position = Vector2(578.5, 77.5)
+shape = SubResource("RectangleShape2D_bkp3o")
+debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D" unique_id=1688543376]
+position = Vector2(572.49994, 65.24999)
+scale = Vector2(1220.9998, 131.49998)
+mesh = SubResource("QuadMesh_4kxuq")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=1986463866]
+position = Vector2(-5, 543)
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D2" unique_id=1941048806]
+position = Vector2(572.49994, 65.24999)
+scale = Vector2(1220.9998, 131.49998)
+mesh = SubResource("QuadMesh_4kxuq")
+
+[node name="hitbox2" type="CollisionShape2D" parent="ground" unique_id=870870036]
+material = SubResource("CanvasItemMaterial_y32ns")
+position = Vector2(-474.9999, 1976)
+shape = SubResource("RectangleShape2D_bkp3o")
+debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
+
+[node name="sprite" type="Sprite2D" parent="ground/hitbox2" unique_id=1501891324]
+position = Vector2(3.7499657, 0)
+scale = Vector2(1344.9999, 123.000015)
+texture = SubResource("CanvasTexture_bkp3o")
+
+[node name="hitbox3" type="CollisionShape2D" parent="ground" unique_id=738314842]
+material = SubResource("CanvasItemMaterial_y32ns")
+position = Vector2(61.00006, 1115.375)
+rotation = -1.5707964
+shape = SubResource("RectangleShape2D_mx8sn")
+debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
+
+[node name="sprite" type="Sprite2D" parent="ground/hitbox3" unique_id=1080946821]
+position = Vector2(3.7499657, 0)
+scale = Vector2(2131.25, 123.000015)
+texture = SubResource("CanvasTexture_ppgk2")
+
+[node name="hitbox4" type="CollisionShape2D" parent="ground" unique_id=1244868816]
+material = SubResource("CanvasItemMaterial_y32ns")
+position = Vector2(-1015, 1115)
+rotation = -1.5707964
+shape = SubResource("RectangleShape2D_mx8sn")
+debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
+
+[node name="sprite" type="Sprite2D" parent="ground/hitbox4" unique_id=479894572]
+position = Vector2(3.7499657, 0)
+scale = Vector2(2131.25, 123.000015)
+texture = SubResource("CanvasTexture_ppgk2")
+
+[node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
+script = SubResource("GDScript_7olc6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=30282243]
+position = Vector2(42, 76)
+shape = SubResource("RectangleShape2D_l4wpc")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=217158233]
+position = Vector2(44.703236, 82.153046)
+scale = Vector2(0.25883865, 0.2833878)
+texture = ExtResource("1_2q6dc")
+=======
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lba0c"]
+size = Vector2(258, 96)
+
+[node name="Node2D" type="Node2D" unique_id=1801803192]
+
+[node name="area2" type="Area2D" parent="." unique_id=1583516206]
+position = Vector2(2509, -5)
+collision_layer = 2
+script = ExtResource("7_t1rx8")
+
+[node name="hitbox" type="CollisionShape2D" parent="area2" unique_id=1739149426]
+position = Vector2(-290, 337)
+shape = SubResource("RectangleShape2D_nmbfl")
+debug_color = Color(1, 1, 0, 0.41960785)
+
+[node name="slime" type="CharacterBody2D" parent="area2" unique_id=1047336700]
+position = Vector2(-17, 555)
+collision_mask = 6
+script = ExtResource("8_8iemx")
+metadata/type = "green"
+
+[node name="hitbox" type="CollisionShape2D" parent="area2/slime" unique_id=924624459]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_7olc6")
+
+[node name="sprite" type="Sprite2D" parent="area2/slime/hitbox" unique_id=1533708249]
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("9_64w2a")
+
+[node name="respawn" type="Node2D" parent="." unique_id=1140245952]
+position = Vector2(1177, 422)
+
+[node name="checkpoint" type="Area2D" parent="." unique_id=1017843816]
+position = Vector2(1556, 456)
+script = ExtResource("8_b121j")
+
+[node name="hitbox" type="CollisionShape2D" parent="checkpoint" unique_id=1150657248]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_lba0c")
+
+[node name="slime" type="RigidBody2D" parent="." unique_id=739022566]
+position = Vector2(3470, 371)
+mass = 0.024
+can_sleep = false
+metadata/type = "purple"
+
+[node name="hitbox" type="CollisionShape2D" parent="slime" unique_id=1969822333]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_7olc6")
+
+[node name="sprite" type="Sprite2D" parent="slime/hitbox" unique_id=932908251]
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("11_t1rx8")
+>>>>>>> Stashed changes
