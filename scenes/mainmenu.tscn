@@ -151,7 +151,7 @@ position = Vector2(1734, 24)
 [node name="background" type="ColorRect" parent="Credits" unique_id=1213165286]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 metadata/_edit_use_anchors_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Credits/background" unique_id=287679811]
@@ -209,7 +209,7 @@ position = Vector2(0, 811)
 [node name="background" type="ColorRect" parent="Settings" unique_id=336643738]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0.4739583, 0.4739583, 0.4739583, 1)
+color = Color(1, 1, 1, 0)
 
 [node name="cameraNode" type="Node2D" parent="Settings/background" unique_id=1631271310]
 position = Vector2(576, 324)
