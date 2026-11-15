@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scenes/back_button.gd" id="10_4hago"]
 [ext_resource type="Script" uid="uid://dbocjoc8ftvb3" path="res://scenes/camera_2d.gd" id="10_h73c4"]
 [ext_resource type="Script" uid="uid://diqa0ct71budq" path="res://scenes/credits_node.gd" id="10_uui5l"]
+[ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scenes/music_volume.gd" id="14_kait0"]
+[ext_resource type="Script" uid="uid://dlepee6wfu68f" path="res://scenes/sfx_volume.gd" id="15_6pj40"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
 _limits = [-360.0, 360.0, 0.0, 1.0]
@@ -183,7 +185,7 @@ position = Vector2(0, 811)
 [node name="background" type="ColorRect" parent="Settings" unique_id=336643738]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 1)
+color = Color(0.4739583, 0.4739583, 0.4739583, 1)
 
 [node name="cameraNode" type="Node2D" parent="Settings/background" unique_id=1631271310]
 position = Vector2(576, 324)
@@ -196,3 +198,61 @@ offset_right = 112.0
 offset_bottom = 76.0
 text = "Back"
 script = ExtResource("10_4hago")
+
+[node name="musicVolume" type="Node2D" parent="Settings/background" unique_id=1362592549]
+position = Vector2(0, -100)
+script = ExtResource("14_kait0")
+
+[node name="volumeSlide" type="HSlider" parent="Settings/background/musicVolume" unique_id=1180203315]
+offset_left = 476.0
+offset_top = 261.0
+offset_right = 673.0
+offset_bottom = 356.0
+min_value = -80.0
+max_value = 10.0
+
+[node name="volumeNum" type="RichTextLabel" parent="Settings/background/musicVolume" unique_id=1552293626]
+offset_left = 485.0
+offset_top = 323.0
+offset_right = 667.0
+offset_bottom = 374.69873
+bbcode_enabled = true
+text = "[center]0.0[/center]
+"
+
+[node name="title" type="RichTextLabel" parent="Settings/background/musicVolume" unique_id=1393653880]
+offset_left = 476.0
+offset_top = 269.0
+offset_right = 676.0
+offset_bottom = 297.0
+bbcode_enabled = true
+text = "[center]Music Volume[/center]"
+
+[node name="sfxVolume" type="Node2D" parent="Settings/background" unique_id=325761545]
+position = Vector2(0, 50)
+script = ExtResource("15_6pj40")
+
+[node name="volumeSlide" type="HSlider" parent="Settings/background/sfxVolume" unique_id=1234735107]
+offset_left = 476.0
+offset_top = 261.0
+offset_right = 673.0
+offset_bottom = 356.0
+min_value = -80.0
+max_value = 10.0
+
+[node name="volumeNum" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=182260224]
+offset_left = 485.0
+offset_top = 323.0
+offset_right = 667.0
+offset_bottom = 374.69873
+bbcode_enabled = true
+text = "[center]0.0[/center]
+"
+
+[node name="title" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=1754087944]
+offset_left = 476.0
+offset_top = 269.0
+offset_right = 676.0
+offset_bottom = 297.0
+bbcode_enabled = true
+text = "[center]Music Volume[/center]"
