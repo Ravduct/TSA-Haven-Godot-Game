@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://image assets/planet.png" id="3_h73c4"]
 [ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://audio/planet_menu.mp3" id="4_85riq"]
 [ext_resource type="Texture2D" uid="uid://b4lwj0hcwkwvy" path="res://image assets/settings.png" id="5_4hago"]
+[ext_resource type="Script" uid="uid://cs6c358iiq2ou" path="res://scenes/settings_in.gd" id="5_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://df2a0gm1xymeb" path="res://image assets/CREDITS.png" id="6_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://image assets/play button.png" id="7_kait0"]
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scenes/credits.gd" id="7_wf3n4"]
@@ -12,6 +13,8 @@
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scenes/back_button.gd" id="10_4hago"]
 [ext_resource type="Script" uid="uid://dbocjoc8ftvb3" path="res://scenes/camera_2d.gd" id="10_h73c4"]
 [ext_resource type="Script" uid="uid://diqa0ct71budq" path="res://scenes/credits_node.gd" id="10_uui5l"]
+[ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scenes/music_volume.gd" id="14_kait0"]
+[ext_resource type="Script" uid="uid://dlepee6wfu68f" path="res://scenes/sfx_volume.gd" id="15_6pj40"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
 _limits = [-360.0, 360.0, 0.0, 1.0]
@@ -29,7 +32,7 @@ radius = 0.01
 offset_left = -1.0
 offset_top = -23.0
 offset_right = 2978.0
-offset_bottom = 675.0
+offset_bottom = 1471.0
 color = Color(0, 0, 0, 1)
 
 [node name="stars" type="CPUParticles2D" parent="." unique_id=1530533612]
@@ -52,7 +55,7 @@ angle_curve = SubResource("Curve_0e48y")
 scale_amount_max = 5.0
 
 [node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
-position = Vector2(576, 345)
+position = Vector2(576, 324)
 scale = Vector2(400, 400)
 script = ExtResource("1_4hago")
 
@@ -80,6 +83,7 @@ autowrap_mode = 3
 autowrap_trim_flags = 0
 clip_text = true
 expand_icon = true
+script = ExtResource("5_gjjcl")
 
 [node name="credits" type="Button" parent="." unique_id=535208277]
 offset_left = 172.0
@@ -95,10 +99,10 @@ expand_icon = true
 script = ExtResource("7_wf3n4")
 
 [node name="play" type="Button" parent="." unique_id=1865689507]
-offset_left = 447.0
-offset_top = 219.0
-offset_right = 576.0
-offset_bottom = 346.5
+offset_left = 450.0
+offset_top = 198.0
+offset_right = 579.0
+offset_bottom = 325.5
 scale = Vector2(2, 2)
 size_flags_stretch_ratio = 0.0
 icon = ExtResource("7_kait0")
@@ -163,6 +167,7 @@ text = "Back"
 script = ExtResource("10_4hago")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1863579707]
+position = Vector2(576, 324)
 script = ExtResource("10_h73c4")
 
 [node name="menu music" type="AudioStreamPlayer2D" parent="Camera2D" unique_id=1909027303]
@@ -175,9 +180,79 @@ autoplay = true
 parameters/looping = true
 
 [node name="Settings" type="Node2D" parent="." unique_id=838375638]
-position = Vector2(12, 811)
+position = Vector2(0, 811)
 
-[node name="ColorRect" type="ColorRect" parent="Settings" unique_id=336643738]
+[node name="background" type="ColorRect" parent="Settings" unique_id=336643738]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 1)
+color = Color(0.4739583, 0.4739583, 0.4739583, 1)
+
+[node name="cameraNode" type="Node2D" parent="Settings/background" unique_id=1631271310]
+position = Vector2(576, 324)
+
+[node name="backButton" type="Button" parent="Settings/background" unique_id=965063414]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 29.0
+offset_right = 112.0
+offset_bottom = 76.0
+text = "Back"
+script = ExtResource("10_4hago")
+
+[node name="musicVolume" type="Node2D" parent="Settings/background" unique_id=1362592549]
+position = Vector2(0, -100)
+script = ExtResource("14_kait0")
+
+[node name="volumeSlide" type="HSlider" parent="Settings/background/musicVolume" unique_id=1180203315]
+offset_left = 476.0
+offset_top = 261.0
+offset_right = 673.0
+offset_bottom = 356.0
+min_value = -80.0
+max_value = 10.0
+
+[node name="volumeNum" type="RichTextLabel" parent="Settings/background/musicVolume" unique_id=1552293626]
+offset_left = 485.0
+offset_top = 323.0
+offset_right = 667.0
+offset_bottom = 374.69873
+bbcode_enabled = true
+text = "[center]0.0[/center]
+"
+
+[node name="title" type="RichTextLabel" parent="Settings/background/musicVolume" unique_id=1393653880]
+offset_left = 476.0
+offset_top = 269.0
+offset_right = 676.0
+offset_bottom = 297.0
+bbcode_enabled = true
+text = "[center]Music Volume[/center]"
+
+[node name="sfxVolume" type="Node2D" parent="Settings/background" unique_id=325761545]
+position = Vector2(0, 50)
+script = ExtResource("15_6pj40")
+
+[node name="volumeSlide" type="HSlider" parent="Settings/background/sfxVolume" unique_id=1234735107]
+offset_left = 476.0
+offset_top = 261.0
+offset_right = 673.0
+offset_bottom = 356.0
+min_value = -80.0
+max_value = 10.0
+
+[node name="volumeNum" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=182260224]
+offset_left = 485.0
+offset_top = 323.0
+offset_right = 667.0
+offset_bottom = 374.69873
+bbcode_enabled = true
+text = "[center]0.0[/center]
+"
+
+[node name="title" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=1754087944]
+offset_left = 476.0
+offset_top = 269.0
+offset_right = 676.0
+offset_bottom = 297.0
+bbcode_enabled = true
+text = "[center]Music Volume[/center]"
