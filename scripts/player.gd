@@ -89,13 +89,13 @@ const JIGGLE_SHADER := """
 shader_type canvas_item;
 
 uniform vec2 player_pos = vec2(0.0);
-uniform float dent_radius = 600.0;
-uniform float dent_softness = 0.4;
+uniform float dent_radius = 300.0;
+uniform float dent_softness = 0.9;
 uniform float dent_pull = 0.15;
 uniform float wave_radius = 500.0;
 uniform float press = 0.0;
 uniform float strength = 0.0;
-uniform float frequency = 45.0;
+uniform float frequency = 25.0;
 uniform float push = 25.0;
 
 void vertex() {
@@ -315,7 +315,10 @@ func _physics_process(delta: float):
 	if abs(velocity.y) < 0.1 && falling < 1:
 		onfloor = true
 	
-	if is_on_floor():
+	if position.y > 1500:
+		respawn()
+	
+	if onfloor:
 		ground_timer = ground_grace
 	else:
 		ground_timer = max(ground_timer - delta, 0.0)
@@ -338,7 +341,7 @@ func _physics_process(delta: float):
 		press_vel += abs(last_v.y) * land_press
 		add_ripple(clamp(abs(last_v.y) / land_ripple_scale, 0.3, max_ripple))
 		play_random(land_player, land_sounds, land_pitch_min, land_pitch_max)
-	elif is_on_floor() and abs(velocity.x) > 20.0:
+	elif onfloor and abs(velocity.x) > 20.0:
 		add_ripple(min(abs(velocity.x) / speed, 1.0) * run_ripple * delta)
 	
 	was_grounded = grounded

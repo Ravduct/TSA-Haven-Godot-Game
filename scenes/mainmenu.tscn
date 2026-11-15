@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scripts/credits.gd" id="7_wf3n4"]
 [ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
+[ext_resource type="Script" uid="uid://cu4yvmr8d2hwq" path="res://scenes/sfx_volume.gd" id="13_gjjcl"]
 [ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scripts/music_volume.gd" id="14_kait0"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
@@ -34,6 +35,25 @@ color = Color(0, 0, 0, 1)
 
 [node name="stars" type="CPUParticles2D" parent="." unique_id=1530533612]
 position = Vector2(-441, -525)
+scale = Vector2(400, 400)
+skew = 0.28797933
+amount = 200
+lifetime = 5.0
+preprocess = 8.41
+randomness = 1.0
+lifetime_randomness = 0.64
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector2(1, 4)
+spread = 180.0
+gravity = Vector2(220, 200)
+angle_min = -488.6
+angle_max = 720.0
+angle_curve = SubResource("Curve_0e48y")
+scale_amount_max = 5.0
+
+[node name="stars2" type="CPUParticles2D" parent="." unique_id=416107422]
+position = Vector2(1984, -471.00003)
 scale = Vector2(400, 400)
 skew = 0.28797933
 amount = 200
@@ -131,7 +151,7 @@ position = Vector2(1734, 24)
 [node name="background" type="ColorRect" parent="Credits" unique_id=1213165286]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 metadata/_edit_use_anchors_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Credits/background" unique_id=287679811]
@@ -189,7 +209,7 @@ position = Vector2(0, 811)
 [node name="background" type="ColorRect" parent="Settings" unique_id=336643738]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0.4739583, 0.4739583, 0.4739583, 1)
+color = Color(1, 1, 1, 0)
 
 [node name="cameraNode" type="Node2D" parent="Settings/background" unique_id=1631271310]
 position = Vector2(576, 324)
@@ -234,6 +254,7 @@ text = "[center]Music Volume[/center]"
 
 [node name="sfxVolume" type="Node2D" parent="Settings/background" unique_id=325761545]
 position = Vector2(0, 50)
+script = ExtResource("13_gjjcl")
 
 [node name="volumeSlide" type="HSlider" parent="Settings/background/sfxVolume" unique_id=1234735107]
 offset_left = 476.0
@@ -249,8 +270,7 @@ offset_top = 323.0
 offset_right = 667.0
 offset_bottom = 374.69873
 bbcode_enabled = true
-text = "[center]0.0[/center]
-"
+text = "[center]0.0[/center]"
 
 [node name="title" type="RichTextLabel" parent="Settings/background/sfxVolume" unique_id=1754087944]
 offset_left = 476.0

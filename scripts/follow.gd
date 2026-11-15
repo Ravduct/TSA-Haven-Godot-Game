@@ -1,7 +1,7 @@
 extends PathFollow2D
 
 var dir: int = 1
-var speed: float = 3
+var speed: float = 6
 
 func _process(delta: float):
 	progress_ratio += dir * delta / speed
