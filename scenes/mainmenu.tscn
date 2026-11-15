@@ -51,6 +51,25 @@ angle_max = 720.0
 angle_curve = SubResource("Curve_0e48y")
 scale_amount_max = 5.0
 
+[node name="stars2" type="CPUParticles2D" parent="." unique_id=416107422]
+position = Vector2(1984, -471.00003)
+scale = Vector2(400, 400)
+skew = 0.28797933
+amount = 200
+lifetime = 5.0
+preprocess = 8.41
+randomness = 1.0
+lifetime_randomness = 0.64
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector2(1, 4)
+spread = 180.0
+gravity = Vector2(220, 200)
+angle_min = -488.6
+angle_max = 720.0
+angle_curve = SubResource("Curve_0e48y")
+scale_amount_max = 5.0
+
 [node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
 position = Vector2(576, 324)
 scale = Vector2(400, 400)
@@ -131,7 +150,7 @@ position = Vector2(1734, 24)
 [node name="background" type="ColorRect" parent="Credits" unique_id=1213165286]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0)
 metadata/_edit_use_anchors_ = true
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Credits/background" unique_id=287679811]
@@ -189,7 +208,7 @@ position = Vector2(0, 811)
 [node name="background" type="ColorRect" parent="Settings" unique_id=336643738]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0.4739583, 0.4739583, 0.4739583, 1)
+color = Color(0.4745098, 0.4745098, 0.4745098, 0)
 
 [node name="cameraNode" type="Node2D" parent="Settings/background" unique_id=1631271310]
 position = Vector2(576, 324)

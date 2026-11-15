@@ -7,7 +7,10 @@
 [ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="3_ppgk2"]
 [ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_fpun6"]
 [ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
+[ext_resource type="Texture2D" uid="uid://bso4ioh743e86" path="res://image assets/jellyfish1.png" id="4_pqd0y"]
+[ext_resource type="Texture2D" uid="uid://cjif16n3qbigx" path="res://image assets/jellyfish2.png" id="5_5k0ak"]
 [ext_resource type="Texture2D" uid="uid://cg3dbf4eu85f4" path="res://image assets/green_tileset.png" id="5_ppgk2"]
+[ext_resource type="Script" uid="uid://p3hr1xg5e04w" path="res://scenes/sprite.gd" id="6_3ies3"]
 [ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
 [ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_olg7q"]
 [ext_resource type="Texture2D" uid="uid://dgbd2ixc1k3r8" path="res://image assets/2026_11_14_0u5_Kleki.png" id="9_olg7q"]
@@ -20,6 +23,9 @@
 [ext_resource type="Texture2D" uid="uid://ogjitjnffyo3" path="res://image assets/jello_empty.png" id="17_pqd0y"]
 [ext_resource type="Script" uid="uid://bvc4m7ghsrump" path="res://scripts/drowning.gd" id="19_8gofh"]
 [ext_resource type="PackedScene" uid="uid://bowkv52chqd7c" path="res://scenes/parallax_2d.tscn" id="19_gunhw"]
+[ext_resource type="Texture2D" uid="uid://gxi2ysip4x71" path="res://image assets/geyser.png" id="23_5k0ak"]
+[ext_resource type="Script" uid="uid://dr5mwu6bwat54" path="res://scripts/geyser.gd" id="24_wu01b"]
+[ext_resource type="AudioStream" uid="uid://dgckjeifib5nh" path="res://music/space_adventure.mp3" id="26_xy2fk"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]
 
@@ -32,9 +38,9 @@ size = Vector2(71, 138)
 
 [sub_resource type="Curve2D" id="Curve2D_rd3vj"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, -25.461548, -628.87305, 0, 0, 0, 0, -112.58656, 240.82532, 0, 0, 0, 0, -191.03848, -1182.3175)
+"points": PackedVector2Array(0, 0, 0, 0, 450, 12, 0, 0, 0, 0, -977, 15)
 }
-point_count = 3
+point_count = 2
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_y32ns"]
 
@@ -42,6 +48,23 @@ point_count = 3
 size = Vector2(543, 109.5)
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_w7c3h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mmx0x"]
+size = Vector2(200, 350)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l4wpc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_pqd0y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_5k0ak")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nmbfl"]
 size = Vector2(1115, 701)
@@ -155,6 +178,12 @@ colors = PackedColorArray(1, 1, 1, 1, 0.6666667, 0.8509804, 0.8535948, 0.6666667
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bkp3o"]
 size = Vector2(729, 169)
 
+[sub_resource type="Gradient" id="Gradient_bkp3o"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.46666667)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x156v"]
+size = Vector2(20, 89.88591)
+
 [node name="Node2D" type="Node2D" unique_id=1801803192]
 
 [node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
@@ -184,7 +213,7 @@ scale = Vector2(2.5365853, 0.21501707)
 curve = SubResource("Curve2D_rd3vj")
 
 [node name="follow" type="PathFollow2D" parent="path" unique_id=1170533802]
-position = Vector2(-25.461548, -628.87305)
+position = Vector2(450, 12)
 rotation = 0.2067315
 scale = Vector2(0.39423078, 4.6507936)
 rotates = false
@@ -198,7 +227,7 @@ update_rotation = false
 update_scale = false
 
 [node name="platform" type="AnimatableBody2D" parent="path" unique_id=1992280718]
-position = Vector2(-25.461609, -628.87317)
+position = Vector2(449.99994, 12)
 script = ExtResource("4_fpun6")
 
 [node name="hitbox" type="CollisionShape2D" parent="path/platform" unique_id=462692707]
@@ -211,6 +240,37 @@ debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
 [node name="sprite" type="Sprite2D" parent="path/platform/hitbox" unique_id=1725613151]
 scale = Vector2(544, 109.5)
 texture = SubResource("CanvasTexture_w7c3h")
+
+[node name="path2" type="Path2D" parent="." unique_id=236998223]
+position = Vector2(5092, -181)
+curve = SubResource("Curve2D_rd3vj")
+
+[node name="follow" type="PathFollow2D" parent="path2" unique_id=1427724420]
+position = Vector2(450, 12)
+rotation = 0.2067315
+scale = Vector2(0.39423078, 4.6507936)
+rotates = false
+cubic_interp = false
+loop = false
+script = ExtResource("3_64w2a")
+
+[node name="remoteTransform" type="RemoteTransform2D" parent="path2/follow" unique_id=594629837]
+remote_path = NodePath("../../slime")
+update_rotation = false
+update_scale = false
+
+[node name="slime" type="AnimatableBody2D" parent="path2" unique_id=619826549]
+position = Vector2(450, 12)
+metadata/type = "jelly"
+
+[node name="hitbox" type="CollisionShape2D" parent="path2/slime" unique_id=1955890971]
+position = Vector2(0, -175)
+shape = SubResource("RectangleShape2D_mmx0x")
+
+[node name="sprite" type="AnimatedSprite2D" parent="path2/slime/hitbox" unique_id=1438374129]
+sprite_frames = SubResource("SpriteFrames_l4wpc")
+frame_progress = 0.8546446
+script = ExtResource("6_3ies3")
 
 [node name="area" type="Area2D" parent="." unique_id=108581321]
 position = Vector2(-370, 0)
@@ -264,7 +324,7 @@ texture = ExtResource("9_olg7q")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=33805410]
 position = Vector2(2095, -385)
-tile_map_data = PackedByteArray("AAD1/woAAAAAAAAAAAD0/woAAAAAAAAAAADz/woAAAAAAAAAAADy/woAAAAAAAAAAADx/woAAAAAAAAAAADw/woAAAAAAAAAAADv/woAAAAAAAAAAADu/woAAAAAAAAAAADt/woAAAAAAAAAAADr/woAAAAAAAAAAADq/woAAAAAAAAAAADp/woAAAAAAAAAAADo/woAAAAAAAAAAADn/woAAAAAAAAAAADm/woAAAAAAAAAAADl/woAAAAAAAAAAADk/woAAAAAAAAAAADj/woAAAAAAAAAAADi/woAAAAAAAAAAADh/woAAAAAAAAAAADg/woAAAAAAAAAAADf/woAAAAAAAAAAADs/woAAAAAAAAAAADf/wkAAAAAAAAAAADf/wgAAAAAAAAAAADf/wcAAAAAAAAAAADf/wYAAAAAAAAAAADf/wUAAAAAAAAAAADf/wQAAAAAAAAAAADf/wMAAAAAAAAAAADf/wIAAAAAAAAAAADf/wEAAAAAAAAAAADf/wAAAAAAAAAAAADf////AAAAAAAAAADf//7/AAAAAAAAAADf//3/AAAAAAAAAADg//3/AAAAAAAAAADh//3/AAAAAAAAAADi//3/AAAAAAAAAADj//3/AAAAAAAAAADk//3/AAAAAAAAAADl//3/AAAAAAAAAADm//3/AAAAAAAAAADn//3/AAAAAAAAAADo//3/AAAAAAAAAADp//3/AAAAAAAAAADq//3/AAAAAAAAAADr//3/AAAAAAAAAADs//3/AAAAAAAAAADt//3/AAAAAAAAAADu//3/AAAAAAAAAADv//3/AAAAAAAAAADw//3/AAAAAAAAAADx//3/AAAAAAAAAADy//3/AAAAAAAAAADz//3/AAAAAAAAAAD0//3/AAAAAAAAAAD1//3/AAAAAAAAAAD2//3/AAAAAAAAAAD2//7/AAAAAAAAAAD2////AAAAAAAAAAD2/wAAAAAAAAAAAAD2/wEAAAAAAAAAAAD2/wIAAAAAAAAAAAD2/wMAAAAAAAAAAAD2/woAAAAAAAAAAAD3/woAAAAAAAAAAAD4/woAAAAAAAAAAAD5/woAAAAAAAAAAAD6/woAAAAAAAAAAAD7/woAAAAAAAAAAAD8/woAAAAAAAAAAAD9/woAAAAAAAAAAAD+/woAAAAAAAAAAAD//woAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAoAAAAAAAAAAAAPAAoAAAAAAAAAAAAQAAoAAAAAAAAAAAARAAoAAAAAAAAAAAASAAoAAAAAAAAAAAASAAkAAAAAAAAAAAASAAgAAAAAAAAAAAASAAcAAAAAAAAAAAASAAYAAAAAAAAAAAASAAUAAAAAAAAAAAASAAQAAAAAAAAAAAASAAMAAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAD1/woAAAAAAAAAAAD0/woAAAAAAAAAAADz/woAAAAAAAAAAADy/woAAAAAAAAAAADx/woAAAAAAAAAAADw/woAAAAAAAAAAADv/woAAAAAAAAAAADu/woAAAAAAAAAAADt/woAAAAAAAAAAADr/woAAAAAAAAAAADq/woAAAAAAAAAAADp/woAAAAAAAAAAADo/woAAAAAAAAAAADn/woAAAAAAAAAAADm/woAAAAAAAAAAADl/woAAAAAAAAAAADk/woAAAAAAAAAAADj/woAAAAAAAAAAADi/woAAAAAAAAAAADh/woAAAAAAAAAAADg/woAAAAAAAAAAADf/woAAAAAAAAAAADs/woAAAAAAAAAAADf/wkAAAAAAAAAAADf/wgAAAAAAAAAAADf/wcAAAAAAAAAAADf/wYAAAAAAAAAAADf/wUAAAAAAAAAAADf/wQAAAAAAAAAAADf/wMAAAAAAAAAAADf/wIAAAAAAAAAAADf/wEAAAAAAAAAAADf/wAAAAAAAAAAAADf////AAAAAAAAAADf//7/AAAAAAAAAADf//3/AAAAAAAAAADg//3/AAAAAAAAAADh//3/AAAAAAAAAADi//3/AAAAAAAAAADj//3/AAAAAAAAAADk//3/AAAAAAAAAADl//3/AAAAAAAAAADm//3/AAAAAAAAAADn//3/AAAAAAAAAADo//3/AAAAAAAAAADp//3/AAAAAAAAAADq//3/AAAAAAAAAADr//3/AAAAAAAAAADs//3/AAAAAAAAAADt//3/AAAAAAAAAADu//3/AAAAAAAAAADv//3/AAAAAAAAAADw//3/AAAAAAAAAADx//3/AAAAAAAAAADy//3/AAAAAAAAAADz//3/AAAAAAAAAAD0//3/AAAAAAAAAAD1//3/AAAAAAAAAAD2//3/AAAAAAAAAAD2//7/AAAAAAAAAAD2////AAAAAAAAAAD2/wAAAAAAAAAAAAD2/wEAAAAAAAAAAAD2/wIAAAAAAAAAAAD2/wMAAAAAAAAAAAD2/woAAAAAAAAAAAD3/woAAAAAAAAAAAD4/woAAAAAAAAAAAD5/woAAAAAAAAAAAD6/woAAAAAAAAAAAD7/woAAAAAAAAAAAD8/woAAAAAAAAAAAD9/woAAAAAAAAAAAD+/woAAAAAAAAAAAD//woAAAAAAAAAAAAAAAoAAAAAAAAAAAABAAoAAAAAAAAAAAACAAoAAAAAAAAAAAADAAoAAAAAAAAAAAAEAAoAAAAAAAAAAAAFAAoAAAAAAAAAAAAGAAoAAAAAAAAAAAAHAAoAAAAAAAAAAAAIAAoAAAAAAAAAAAAJAAoAAAAAAAAAAAAKAAoAAAAAAAAAAAALAAoAAAAAAAAAAAAMAAoAAAAAAAAAAAANAAoAAAAAAAAAAAAOAAoAAAAAAAAAAAAPAAoAAAAAAAAAAAAQAAoAAAAAAAAAAAARAAoAAAAAAAAAAAASAAoAAAAAAAAAAAASAAkAAAAAAAAAAAASAAgAAAAAAAAAAAASAAcAAAAAAAAAAAASAAYAAAAAAAAAAAASAAUAAAAAAAAAAAASAAQAAAAAAAAAAAASAAMAAAAAAAAAAAAjAAMAAAAAAAAAAAAkAAMAAAAAAAAAAAAlAAMAAAAAAAAAAAAmAAMAAAAAAAAAAAAnAAMAAAAAAAAAAAAoAAMAAAAAAAAAAAApAAMAAAAAAAAAAAAqAAMAAAAAAAAAAAArAAMAAAAAAAAAAAAsAAMAAAAAAAAAAAAtAAMAAAAAAAAAAAAjAAQAAAAAAAAAAAAjAAUAAAAAAAAAAAAjAAYAAAAAAAAAAAATAAQAAAAAAAAAAAAUAAQAAAAAAAAAAAAVAAQAAAAAAAAAAAAWAAQAAAAAAAAAAAAXAAQAAAAAAAAAAAAYAAQAAAAAAAAAAAAZAAQAAAAAAAAAAAAaAAQAAAAAAAAAAAAbAAQAAAAAAAAAAAAcAAQAAAAAAAAAAAAdAAQAAAAAAAAAAAAeAAQAAAAAAAAAAAAfAAQAAAAAAAAAAAAgAAQAAAAAAAAAAAAhAAQAAAAAAAAAAAAiAAQAAAAAAAAAAAAiAAUAAAAAAAAAAAAhAAUAAAAAAAAAAAAgAAUAAAAAAAAAAAAfAAUAAAAAAAAAAAAeAAUAAAAAAAAAAAAdAAUAAAAAAAAAAAAcAAUAAAAAAAAAAAAbAAUAAAAAAAAAAAAbAAYAAAAAAAAAAAAaAAYAAAAAAAAAAAAaAAUAAAAAAAAAAAAZAAUAAAAAAAAAAAAYAAUAAAAAAAAAAAAXAAUAAAAAAAAAAAAWAAUAAAAAAAAAAAAVAAUAAAAAAAAAAAAUAAUAAAAAAAAAAAATAAUAAAAAAAAAAAATAAYAAAAAAAAAAAAUAAYAAAAAAAAAAAAVAAYAAAAAAAAAAAAWAAYAAAAAAAAAAAAXAAYAAAAAAAAAAAAYAAYAAAAAAAAAAAAZAAYAAAAAAAAAAAAcAAYAAAAAAAAAAAAdAAYAAAAAAAAAAAAeAAYAAAAAAAAAAAAiAAYAAAAAAAAAAAAhAAYAAAAAAAAAAAAgAAYAAAAAAAAAAAAfAAYAAAAAAAAAAAD3//7/AAAAAAAAAAD4//7/AAAAAAAAAAD5//7/AAAAAAAAAAD5////AAAAAAAAAAD6////AAAAAAAAAAD7////AAAAAAAAAAAtAAQAAAAAAAAAAAAtAAUAAAAAAAAAAAAtAAYAAAAAAAAAAAA=")
 tile_set = SubResource("TileSet_bkp3o")
 
 [node name="respawn" type="Node2D" parent="." unique_id=99566622]
@@ -302,7 +362,8 @@ texture = ExtResource("13_wc255")
 z_index = -10
 
 [node name="jarona" type="Area2D" parent="." unique_id=1900548375]
-position = Vector2(-154, -359)
+position = Vector2(-2106, -1274)
+scale = Vector2(2.267296, 2.1664004)
 script = ExtResource("19_8gofh")
 
 [node name="ColorRect" type="ColorRect" parent="jarona" unique_id=40623188]
@@ -325,8 +386,73 @@ emission_rect_extents = Vector2(300, 5)
 gravity = Vector2(0, -300)
 scale_amount_min = 0.01
 scale_amount_max = 0.1
+color = Color(1, 0, 0.41568628, 1)
 color_ramp = SubResource("Gradient_b121j")
 
 [node name="hitbox" type="CollisionShape2D" parent="jarona" unique_id=1439656498]
 position = Vector2(3327.5, 978.5)
 shape = SubResource("RectangleShape2D_bkp3o")
+
+[node name="jarona geyser" type="Area2D" parent="." unique_id=1585013713]
+position = Vector2(-6218, -4175)
+scale = Vector2(4.34358, 4.6503396)
+script = ExtResource("19_8gofh")
+
+[node name="ColorRect" type="ColorRect" parent="jarona geyser" unique_id=2055134657]
+material = SubResource("ShaderMaterial_klq6b")
+offset_left = 2973.0
+offset_top = 870.0
+offset_right = 3697.0
+offset_bottom = 1064.0
+metadata/_edit_use_anchors_ = true
+
+[node name="bubbles" type="CPUParticles2D" parent="jarona geyser/ColorRect" unique_id=1667882425]
+position = Vector2(296, 220)
+amount = 20
+texture = ExtResource("2_ppgk2")
+preprocess = 1.03
+explosiveness = 0.07
+randomness = 0.54
+emission_shape = 3
+emission_rect_extents = Vector2(300, 5)
+gravity = Vector2(0, -300)
+scale_amount_min = 0.01
+scale_amount_max = 0.1
+color = Color(1, 0, 0.41568628, 1)
+color_ramp = SubResource("Gradient_b121j")
+
+[node name="hitbox" type="CollisionShape2D" parent="jarona geyser" unique_id=317655054]
+position = Vector2(3327.5, 978.5)
+shape = SubResource("RectangleShape2D_bkp3o")
+
+[node name="geyser" type="CPUParticles2D" parent="jarona geyser" unique_id=1158982046]
+position = Vector2(3078.3364, 905.5252)
+amount = 100
+texture = ExtResource("23_5k0ak")
+direction = Vector2(0, -1)
+spread = 12.62
+initial_velocity_min = 150.31
+initial_velocity_max = 269.13
+angular_velocity_min = -99.81
+angular_velocity_max = 173.29
+linear_accel_min = -100.0
+linear_accel_max = -100.0
+angle_min = -313.7
+angle_max = 244.1
+color = Color(1, 0, 0, 0.25882354)
+color_ramp = SubResource("Gradient_bkp3o")
+script = ExtResource("24_wu01b")
+
+[node name="hitbox" type="Area2D" parent="jarona geyser/geyser" unique_id=988986713]
+
+[node name="hitbox" type="CollisionShape2D" parent="jarona geyser/geyser/hitbox" unique_id=159724875]
+position = Vector2(0, -32.2556)
+shape = SubResource("RectangleShape2D_x156v")
+
+[node name="Timer" type="Timer" parent="jarona geyser/geyser" unique_id=614521388]
+autostart = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=770117665]
+stream = ExtResource("26_xy2fk")
+autoplay = true
+parameters/looping = true
