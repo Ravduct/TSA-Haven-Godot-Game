@@ -11,7 +11,7 @@
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scripts/credits.gd" id="7_wf3n4"]
 [ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
-[ext_resource type="Script" uid="uid://cu4yvmr8d2hwq" path="res://scenes/sfx_volume.gd" id="13_gjjcl"]
+[ext_resource type="Script" uid="uid://cu4yvmr8d2hwq" path="res://scripts/sfx_volume.gd" id="13_gjjcl"]
 [ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scripts/music_volume.gd" id="14_kait0"]
 
 [sub_resource type="Curve" id="Curve_0e48y"]
@@ -24,7 +24,7 @@ radius = 0.01
 
 [sub_resource type="QuadMesh" id="QuadMesh_62yky"]
 
-[node name="Node2D" type="Node2D" unique_id=58521646]
+[node name="menu" type="Node2D" unique_id=58521646]
 
 [node name="background" type="ColorRect" parent="." unique_id=179468768]
 offset_left = -1.0
@@ -88,15 +88,6 @@ texture = ExtResource("2_wf3n4")
 scale = Vector2(1.004, 1)
 mesh = SubResource("QuadMesh_62yky")
 texture = ExtResource("3_h73c4")
-
-[node name="menu music" type="AudioStreamPlayer2D" parent="." unique_id=1909027303]
-position = Vector2(-441, -525)
-scale = Vector2(400, 400)
-skew = 0.28797925
-stream = ExtResource("4_85riq")
-pitch_scale = 0.6
-autoplay = true
-parameters/looping = true
 
 [node name="settings" type="Button" parent="." unique_id=1180905257]
 offset_left = 752.0

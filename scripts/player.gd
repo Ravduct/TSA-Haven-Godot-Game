@@ -64,6 +64,7 @@ var boingboing: bool = true
 var falling: int = 0
 var onfloor: bool = false
 var ogbounce = bounce
+var respawn_node
 
 var press: float = 0.0
 var press_vel: float = 0.0
@@ -120,6 +121,7 @@ void vertex() {
 
 func _ready():
 	$hurtbox.body_entered.connect(on_hit)
+	respawn_node = get_node("../respawn")
 	respawn()
 	
 	var shader := Shader.new()
@@ -253,14 +255,14 @@ func add_ripple(amount: float) -> void:
 	ripple = min(ripple + amount, max_ripple)
 
 func die():
+	respawn()
 	var deathScreen = owner.get_node("CanvasLayer").get_node("deathScreen")
 	deathScreen.show()
 	await get_tree().create_timer(2.0).timeout
 	deathScreen.hide()
-	respawn()
 
 func respawn() -> void:
-	position = get_node("/root/Node2D/respawn").global_position
+	position = respawn_node.global_position
 	velocity = Vector2.ZERO
 	dent_pos_ready = false
 

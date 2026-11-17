@@ -3,7 +3,7 @@ extends Area2D
 var player
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	player = get_node("/root/Node2D/player")
+	player = get_node("/root/level/player")
 	body_entered.connect(enter)
 	
 func enter(body):

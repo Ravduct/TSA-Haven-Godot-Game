@@ -17,7 +17,7 @@ var player
 
 func _ready():
 	turnaround()
-	player = get_node("/root/Node2D/player")
+	player = get_node("/root/level/player")
 
 func turn(targetdir: direction):
 	dir = targetdir

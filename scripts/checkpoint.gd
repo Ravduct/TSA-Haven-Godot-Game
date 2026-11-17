@@ -6,8 +6,8 @@ var jello: AnimatedSprite2D
 var active = true
 
 func _ready():
-	player = get_node("/root/Node2D/player")
-	respawnPoint = get_node("/root/Node2D/respawn")
+	player = get_node("/root/level/player")
+	respawnPoint = get_node("/root/level/respawn")
 	jello = get_node("hitbox/jello")
 	body_entered.connect(on_hit)
 	$"hitbox/jello".frame_changed.connect(on_frame)

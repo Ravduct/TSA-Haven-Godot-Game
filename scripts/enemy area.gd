@@ -5,7 +5,7 @@ var player
 func _ready():
 	body_exited.connect(on_body_exit)
 	body_entered.connect(on_body_enter)
-	player = get_node("/root/Node2D/player")
+	player = get_node("/root/level/player")
 
 func on_body_exit(body: Node):
 	if body != $slime:

@@ -279,7 +279,7 @@ size = Vector2(20, 42.900818)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mmx0x"]
 size = Vector2(400, 400)
 
-[node name="Node2D" type="Node2D" unique_id=1801803192]
+[node name="level" type="Node2D" unique_id=1801803192]
 
 [node name="backgound" parent="." unique_id=1550976510 instance=ExtResource("19_gunhw")]
 z_index = -10
