@@ -15,6 +15,11 @@ run/main_scene="res://scenes/mainmenu.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+AudioManager="*uid://cig34bp51ga14"
+Level="*uid://curlaob3cq6jt"
+
 [display]
 
 window/stretch/mode="canvas_items"
