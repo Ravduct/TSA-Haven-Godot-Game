@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bhbs1p05mot41"]
 
 [ext_resource type="Texture2D" uid="uid://cw5ohyghum6y4" path="res://image assets/end1.png" id="1_mwn6m"]
-[ext_resource type="Script" uid="uid://brgjtt24ocffc" path="res://scenes/end.gd" id="1_p7m4f"]
+[ext_resource type="Script" uid="uid://brgjtt24ocffc" path="res://scripts/end.gd" id="1_p7m4f"]
 [ext_resource type="AudioStream" uid="uid://cpn5egpje0l18" path="res://music/bus.mp3" id="3_bvfni"]
 
 [node name="Node2D" type="Node2D" unique_id=824481200]
