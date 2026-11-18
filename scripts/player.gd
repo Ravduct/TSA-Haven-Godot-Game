@@ -32,6 +32,7 @@ extends CharacterBody2D
 @export var land_press: float = 0.6
 @export var land_ripple_scale: float = 600.0
 @export var min_land_speed: float = 150.0
+@export var land_cooldown: float = 0.5   # min seconds between landing jiggles
 
 @export_group("Ripple wave")
 @export var ripple_duration: float = 1.5
@@ -58,6 +59,13 @@ extends CharacterBody2D
 @export var move_volume_ease: float = 12.0
 @export var move_stop_delay: float = 0.25
 
+@export_group("Ceiling stick")
+@export var stick_time: float = 1.5        # how long you can stay stuck
+@export var stick_cooldown: float = 0.8    # wait before you can stick again
+@export var stick_move_speed: float = 1.5  # sliding speed along the ceiling
+@export var stuck_jiggle_scale: float = 0.2  # how much of the jiggle effect remains while stuck (0 = none, 1 = full)
+@export var jiggle_scale_ease: float = 6.0   # how fast the jiggle fades in/out around sticking
+
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 var last_v: Vector2
 var boingboing: bool = true
@@ -65,6 +73,23 @@ var falling: int = 0
 var onfloor: bool = false
 var ogbounce = bounce
 var respawn_node
+
+# What each tile type does. Add your own!
+const SURFACES := {
+	"ice":    {"friction": 0.985},
+	"mud":    {"friction": 0.6, "speed": 0.5},
+	"boost":  {"speed": 1.8},
+	"bouncy": {"bounce_mul": 1.4},
+}
+const HAZARDS := ["lava", "spikes"]
+
+var surf: Dictionary = {}   # properties of the tile you're standing on
+
+var stuck: bool = false
+var stick_left: float = 0.0
+var stick_cd: float = 0.0
+var land_cd: float = 0.0
+var jiggle_scale: float = 1.0
 
 var press: float = 0.0
 var press_vel: float = 0.0
@@ -85,6 +110,16 @@ var move_player: AudioStreamPlayer
 var move_active: bool = false
 var move_amount: float = 0.0
 var move_idle_time: float = 0.0
+
+func get_tile_type(layer: TileMapLayer, world_pos: Vector2) -> String:
+	if layer.tile_set == null or not layer.tile_set.has_custom_data_layer_by_name("type"):
+		return ""
+	var cell := layer.local_to_map(layer.to_local(world_pos))
+	var data := layer.get_cell_tile_data(cell)
+	if data == null:
+		return ""
+	var value = data.get_custom_data("type")
+	return value if value is String else ""
 
 const JIGGLE_SHADER := """
 shader_type canvas_item;
@@ -262,6 +297,7 @@ func die():
 	deathScreen.hide()
 
 func respawn() -> void:
+	stuck = false
 	position = respawn_node.global_position
 	velocity = Vector2.ZERO
 	dent_pos_ready = false
@@ -274,11 +310,29 @@ func _process(_delta):
 	bounce = 0.1 if Input.is_action_pressed("down") else ogbounce
 	speed = 150 if Input.is_action_pressed("run") else 100
 
+func _start_stick() -> void:
+	stuck = true
+	stick_left = stick_time
+	velocity = Vector2.ZERO
+
+func _release_stick() -> void:
+	stuck = false
+	stick_cd = stick_cooldown
+	velocity.y = 100.0   # small push so you drop off the ceiling
+
 func _physics_process(delta: float):
 	var direction := int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
 	var jumped := false
+	stick_cd = max(stick_cd - delta, 0.0)
+	land_cd = max(land_cd - delta, 0.0)
 	
-	if !onfloor:
+	if stuck:
+		stick_left -= delta
+		velocity.x = direction * speed * stick_move_speed
+		velocity.y = -60.0   # keeps you pressed into the ceiling
+		if stick_left <= 0.0 or Input.is_action_just_pressed("jump") or Input.is_action_pressed("down"):
+			_release_stick()
+	elif !onfloor:
 		velocity.y += gravity * delta
 		velocity.x *= air_res
 		if direction:
@@ -288,8 +342,8 @@ func _physics_process(delta: float):
 			velocity.y -= jumpPower
 			jumped = true
 		if direction:
-			velocity.x += direction * speed
-		velocity.x *= friction
+			velocity.x += direction * speed * surf.get("speed", 1.0)
+		velocity.x *= surf.get("friction", friction)
 	
 	last_v = velocity
 	
@@ -297,15 +351,33 @@ func _physics_process(delta: float):
 	
 	onfloor = false
 	falling += 1
+	var new_surf := {}
+	var touching_sticky := false
 	for i in get_slide_collision_count():
 		var collide = get_slide_collision(i)
 		if collide:
 			var normal = collide.get_normal()
 			var body = collide.get_collider()
+			
+			var tile := ""
+			if body is TileMapLayer:
+				tile = get_tile_type(body, collide.get_position() - normal * 2.0)
+				if tile in HAZARDS:
+					die()
+					return
+				if normal.y < -0.5 and SURFACES.has(tile):
+					new_surf = SURFACES[tile]
+				# ceiling stick: tile is above you (normal points down)
+				if normal.y > 0.5 and tile == "sticky":
+					touching_sticky = true
+					if not stuck and stick_cd <= 0.0:
+						_start_stick()
+			
 			if body.name == "slime" && body.get_meta("type") == "purple":
 				body.apply_central_impulse(normal * -velocity.length()/10)
-			if boingboing:
+			if boingboing and not stuck:
 				var mul = (1 if body.name == "slime" && body.get_meta("type") == "red" else 1.7)
+				mul *= SURFACES.get(tile, {}).get("bounce_mul", 1.0)
 				if normal.dot(Vector2.UP):
 					velocity.y = last_v.y * -bounce * mul
 					onfloor = true
@@ -315,6 +387,10 @@ func _physics_process(delta: float):
 				else:
 					velocity.x = last_v.x * -bounce * mul
 					$boing.play()
+	if stuck and not touching_sticky:
+		_release_stick()   # slid off the edge of the sticky tiles
+	surf = new_surf
+	
 	if abs(velocity.y) < 0.1 && falling < 1:
 		onfloor = true
 	
@@ -337,8 +413,9 @@ func _physics_process(delta: float):
 	
 	var grounded := ground_timer > 0.0
 	
-	# landing: full radius, strong hit
-	if grounded and not was_grounded and abs(last_v.y) > min_land_speed:
+	# landing: full radius, strong hit (cooldown so bouncing doesn't spam it)
+	if grounded and not was_grounded and abs(last_v.y) > min_land_speed and land_cd <= 0.0 and not stuck:
+		land_cd = land_cooldown
 		dent_pos = global_position + feet_offset
 		radius_scale = 1.0
 		press_vel += abs(last_v.y) * land_press
@@ -385,13 +462,18 @@ func _update_jelly(delta: float, grounded: bool) -> void:
 	if grounded:
 		dent_pos = dent_pos.lerp(feet, 1.0 - exp(-follow_speed * delta))
 	
+	# fade the whole effect down while stuck to a ceiling, and back up after
+	var target_jiggle := stuck_jiggle_scale if stuck else 1.0
+	jiggle_scale = lerp(jiggle_scale, target_jiggle, 1.0 - exp(-jiggle_scale_ease * delta))
+	var radius_mul: float = max(jiggle_scale, 0.05)   # keep radii above zero so the shader never divides by 0
+	
 	_apply_material()
 	jiggle_mat.set_shader_parameter("player_pos", dent_pos)
-	jiggle_mat.set_shader_parameter("dent_radius", dent_radius * radius_scale)
+	jiggle_mat.set_shader_parameter("dent_radius", dent_radius * radius_scale * radius_mul)
 	jiggle_mat.set_shader_parameter("dent_softness", dent_softness)
-	jiggle_mat.set_shader_parameter("dent_pull", dent_pull)
-	jiggle_mat.set_shader_parameter("wave_radius", wave_radius * radius_scale)
-	jiggle_mat.set_shader_parameter("press", press)
-	jiggle_mat.set_shader_parameter("strength", ripple)
+	jiggle_mat.set_shader_parameter("dent_pull", dent_pull * jiggle_scale)
+	jiggle_mat.set_shader_parameter("wave_radius", wave_radius * radius_scale * radius_mul)
+	jiggle_mat.set_shader_parameter("press", press * jiggle_scale)
+	jiggle_mat.set_shader_parameter("strength", ripple * jiggle_scale)
 	jiggle_mat.set_shader_parameter("frequency", wave_frequency)
-	jiggle_mat.set_shader_parameter("push", wave_push)
+	jiggle_mat.set_shader_parameter("push", wave_push * jiggle_scale)
