@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c1w6q1hy0e3v3"
+path="res://.godot/imported/sticky jump.mp3-a3ee925b44142e75fdf5ba21cedd8156.mp3str"
+
+[deps]
+
+source_file="res://audio/sticky jump.mp3"
+dest_files=["res://.godot/imported/sticky jump.mp3-a3ee925b44142e75fdf5ba21cedd8156.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
