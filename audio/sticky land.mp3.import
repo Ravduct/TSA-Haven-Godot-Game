@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cdrqqq0p3w5pc"
+path="res://.godot/imported/sticky land.mp3-89466fe1dd1cd3a3809899b14fcafa75.mp3str"
+
+[deps]
+
+source_file="res://audio/sticky land.mp3"
+dest_files=["res://.godot/imported/sticky land.mp3-89466fe1dd1cd3a3809899b14fcafa75.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0.0
+bpm=0.0
+beat_count=0
+bar_beats=4
