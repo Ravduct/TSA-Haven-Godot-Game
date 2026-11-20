@@ -1,10 +1,10 @@
 extends CharacterBody2D
 
 @export var speed: float = 100.0
-@export var jumpPower: float = 500.0
+@export var jumpPower: float = 700.0
 @export var friction: float = 0.8
 @export var air_res: float = 0.99
-@export var bounce: float = 0.4
+@export var bounce: float = 0.5
 
 @export var water_tile_map: TileMapLayer
 @export var layer_node_name: String = "TileMapLayer"
@@ -32,7 +32,8 @@ extends CharacterBody2D
 @export var land_press: float = 0.6
 @export var land_ripple_scale: float = 600.0
 @export var min_land_speed: float = 150.0
-@export var land_cooldown: float = 0.5   # min seconds between landing jiggles
+@export var land_cooldown: float = 0.5   
+@export var max_bounce_speed: float = 1400.0   
 
 @export_group("Ripple wave")
 @export var ripple_duration: float = 1.5
@@ -60,11 +61,29 @@ extends CharacterBody2D
 @export var move_stop_delay: float = 0.25
 
 @export_group("Ceiling stick")
-@export var stick_time: float = 1.5        # how long you can stay stuck
-@export var stick_cooldown: float = 0.8    # wait before you can stick again
-@export var stick_move_speed: float = 1.5  # sliding speed along the ceiling
-@export var stuck_jiggle_scale: float = 0.2  # how much of the jiggle effect remains while stuck (0 = none, 1 = full)
-@export var jiggle_scale_ease: float = 6.0   # how fast the jiggle fades in/out around sticking
+@export var stick_time: float = 1.5        
+@export var stick_cooldown: float = 0.8    
+@export var stick_move_speed: float = 1.5 
+@export var stuck_jiggle_scale: float = 0.2 
+@export var jiggle_scale_ease: float = 6.0   
+@export var stick_span: float = 24.0         
+@export var debug_stick: bool = false        
+
+@export_group("Jiggle edges")
+@export_range(0.0, 1.0) var edge_lock: float = 1.0  
+
+@export_group("Ground movement")
+@export var plain_jump_mul: float = 1.   
+@export var ground_speed_mul: float = 1.1  
+
+@export_group("Death transition")
+@export var close_time: float = 0.4    
+@export var hold_time: float = 0.9      
+@export var open_time: float = 0.55   
+@export var transition_color: Color = Color(0.42, 0.02, 0.08)   
+@export var slash_power: float = 4.0    
+@export var death_text_size: int = 72
+@export var death_font: Font            
 
 var gravity: int = ProjectSettings.get_setting("physics/2d/default_gravity")
 var last_v: Vector2
@@ -74,16 +93,44 @@ var onfloor: bool = false
 var ogbounce = bounce
 var respawn_node
 
-# What each tile type does. Add your own!
-const SURFACES := {
-	"ice":    {"friction": 0.985},
-	"mud":    {"friction": 0.6, "speed": 0.5},
-	"boost":  {"speed": 1.8},
-	"bouncy": {"bounce_mul": 1.4},
-}
-const HAZARDS := ["lava", "spikes"]
+# ---------------------------------------------------------------------------
+# DEATH: one per line in quotes, then a comma.
+# ---------------------------------------------------------------------------
+const DEATH_MESSAGES := [
+	"not today",
+	"maybe next time",
+	"go call houston",
+	"my grandma could to better",
+	"that was a practice run",
+	"just testing for bugs",
+	"slimed out",
+	"jell-no",
+]
 
-var surf: Dictionary = {}   # properties of the tile you're standing on
+
+const SURFACES := {
+	
+	"ice":         {"friction": 0.985, "speed": 0.1, "bounce_mul": 0.0},
+	"bouncy":      {"bounce_mul": 1.0},
+	"extrabouncy": {"bounce_mul": 2.4},
+	"hard":        {"bounce_mul": 0.0, "speed": 1.2},  
+}
+const HAZARDS := ["hurt"]
+
+
+const JIGGLE_TILES := {
+	"bouncy":      1.0,
+	"extrabouncy": 1.0,
+	"sticky":      0.35,
+}
+
+
+const SOUND_TYPES := ["ice", "bouncy", "extrabouncy", "sticky", "hard"]
+
+var surf: Dictionary = {}   
+var ground_tile: String = ""  
+var last_floor_type: String = ""       
+var last_floor_jiggly: bool = false    
 
 var stuck: bool = false
 var stick_left: float = 0.0
@@ -100,16 +147,25 @@ var was_grounded: bool = true
 var dent_pos: Vector2
 var dent_pos_ready: bool = false
 var jiggle_mat: ShaderMaterial
+var jiggle_shader: Shader
+var grid_tex: ImageTexture
 
-var jump_sounds: Array[AudioStream] = []
-var land_sounds: Array[AudioStream] = []
-var move_sounds: Array[AudioStream] = []
+var sound_bank: Dictionary = {}   
 var jump_player: AudioStreamPlayer
 var land_player: AudioStreamPlayer
 var move_player: AudioStreamPlayer
 var move_active: bool = false
+var move_type: String = ""
 var move_amount: float = 0.0
 var move_idle_time: float = 0.0
+
+var dying: bool = false
+var last_death_message: String = ""
+var transition_layer: CanvasLayer
+var transition_rect: ColorRect
+var transition_label: Label
+var slash_mat: ShaderMaterial
+var square_mat: ShaderMaterial
 
 func get_tile_type(layer: TileMapLayer, world_pos: Vector2) -> String:
 	if layer.tile_set == null or not layer.tile_set.has_custom_data_layer_by_name("type"):
@@ -134,8 +190,50 @@ uniform float strength = 0.0;
 uniform float frequency = 25.0;
 uniform float push = 25.0;
 
+// one pixel per tile: R = jiggle weight (0..1), G = 1 if a tile exists there
+uniform sampler2D cell_data : filter_nearest;
+uniform vec2 grid_origin = vec2(0.0);   // world position of the top-left corner of cell (0, 0)
+uniform vec2 cell_size = vec2(100.0);   // world size of one tile
+uniform ivec2 grid_min = ivec2(0);      // first cell stored in the texture
+uniform ivec2 grid_size = ivec2(0);     // texture size in cells
+uniform float edge_lock = 1.0;          // 1 = fully pinned where jiggly meets non-jiggly
+
+// A tile corner is shared by up to 4 cells. If any of them is a non-jiggly tile,
+// the corner is locked in place (edge_lock), so the jiggly tile stretches from there
+// instead of pulling away and leaving a gap. Both tiles share the corner, so they
+// always agree and nothing tears.
+float corner_weight(vec2 world) {
+	vec2 q = (world - grid_origin) / cell_size;
+	ivec2 g = ivec2(round(q));
+	float w = 1.0;
+	bool touches_static = false;
+	bool has_jiggly = false;
+	for (int dy = -1; dy <= 0; dy++) {
+		for (int dx = -1; dx <= 0; dx++) {
+			ivec2 c = g + ivec2(dx, dy) - grid_min;
+			if (c.x < 0 || c.y < 0 || c.x >= grid_size.x || c.y >= grid_size.y) {
+				continue;
+			}
+			vec2 d = texelFetch(cell_data, c, 0).rg;
+			if (d.g > 0.5) {
+				if (d.r < 0.01) {
+					touches_static = true;
+				} else {
+					has_jiggly = true;
+					w = min(w, d.r);
+				}
+			}
+		}
+	}
+	if (touches_static) {
+		return has_jiggly ? w * (1.0 - edge_lock) : 0.0;
+	}
+	return w;
+}
+
 void vertex() {
 	vec2 world = (MODEL_MATRIX * vec4(VERTEX, 0.0, 1.0)).xy;
+	float w = corner_weight(world);
 	vec2 to_vert = world - player_pos;
 	float dist = length(to_vert);
 	vec2 dir = dist > 0.001 ? to_vert / dist : vec2(0.0, 1.0);
@@ -143,14 +241,79 @@ void vertex() {
 	// held dent
 	float dent_fall = 1.0 - smoothstep(0.0, dent_radius, dist);
 	dent_fall = pow(dent_fall, dent_softness);
-	VERTEX.y += press * dent_fall;
-	VERTEX.x -= to_vert.x / dent_radius * press * dent_fall * dent_pull;
+	VERTEX.y += press * dent_fall * w;
+	VERTEX.x -= to_vert.x / dent_radius * press * dent_fall * dent_pull * w;
 
 	// ripple wave
 	float wave_fall = 1.0 - smoothstep(0.0, wave_radius, dist);
 	float wave = sin(TIME * frequency - dist * 0.15);
-	VERTEX += dir * wave * wave_fall * strength * push;
-	VERTEX.y += wave_fall * strength * push * 0.5;
+	VERTEX += dir * wave * wave_fall * strength * push * w;
+	VERTEX.y += wave_fall * strength * push * 0.5 * w;
+}
+"""
+
+
+const SLASH_SHADER := """
+shader_type canvas_item;
+render_mode unshaded;
+
+uniform float t = 0.5; // value between 0 and 1 (animation start and end)
+uniform float power = 10.0;
+uniform vec4 mask_color : source_color = vec4(0.0, 0.0, 0.5, 1.0);
+uniform vec4 background_color : source_color = vec4(0.0, 0.0, 0.0, 0.0);
+uniform vec2 normal = vec2(1.0, 1.0);
+uniform float offset = -0.5;
+
+void fragment() {
+	vec2 p = UV;
+
+	float dist = abs(dot(normalize(normal), p) + offset);
+
+	float thickness = pow(t, power);
+
+	float line = dist <= thickness ? 1.0 : 0.0;
+
+	COLOR = mix(background_color, mask_color, line);
+}
+"""
+
+const SQUARE_SHADER := """
+shader_type canvas_item;
+render_mode unshaded;
+
+uniform float t = 0.5; // value between 0 and 1 (animation start and end)
+uniform vec4 mask_color : source_color = vec4(0.0, 0.0, 0.5, 1.0);
+uniform vec4 background_color : source_color = vec4(0.0, 0.0, 0.0, 0.0);
+uniform vec2 translate = vec2(-0.25, -0.25);
+uniform float extra_size = 1.0;
+
+// returns 1 if it's inside the square, otherwise returns 0
+float square(vec2 uv, float width)
+{
+	return step(max(abs(uv.x), abs(uv.y)), width);
+}
+
+vec2 rotate(vec2 uv, float angle)
+{
+	return uv * mat2(vec2(sin(angle), -cos(angle)), vec2(cos(angle), sin(angle)));
+}
+
+void fragment() {
+	// convert from 0..1 to -1..1
+	vec2 uv = UV * 2.0 - 1.0;
+
+	// fix aspect ratio
+	uv.y *= SCREEN_PIXEL_SIZE.x / SCREEN_PIXEL_SIZE.y;
+
+	// translate
+	uv += translate;
+
+	// rotate UVs
+	uv = rotate(uv, PI * 0.25);
+
+	// "draw" square
+	float sqr = square(uv, (1.0 + extra_size) * t);
+	COLOR = mix(mask_color, background_color, sqr);
 }
 """
 
@@ -159,10 +322,10 @@ func _ready():
 	respawn_node = get_node("../respawn")
 	respawn()
 	
-	var shader := Shader.new()
-	shader.code = JIGGLE_SHADER
+	jiggle_shader = Shader.new()
+	jiggle_shader.code = JIGGLE_SHADER
 	jiggle_mat = ShaderMaterial.new()
-	jiggle_mat.shader = shader
+	jiggle_mat.shader = jiggle_shader
 	
 	if water_tile_map == null:
 		var root := get_tree().current_scene
@@ -174,13 +337,53 @@ func _ready():
 		push_error("JIGGLE: no TileMapLayer found. Assign one or fix layer_node_name.")
 	else:
 		_apply_material()
+		call_deferred("_build_jiggle_grid")
 	
 	_setup_audio()
 
+
+func _build_jiggle_grid() -> void:
+	var layer := water_tile_map
+	if layer == null or layer.tile_set == null:
+		return
+	var rect := layer.get_used_rect()
+	if rect.size.x <= 0 or rect.size.y <= 0:
+		return
+	var has_type := layer.tile_set.has_custom_data_layer_by_name("type")
+	if not has_type:
+		push_warning("JIGGLE: TileSet has no 'type' custom data layer, so every tile will jiggle.")
+	
+	var img := Image.create(rect.size.x, rect.size.y, false, Image.FORMAT_RG8)
+	for cell in layer.get_used_cells():
+		var w: float = 1.0
+		if has_type:
+			var t := ""
+			var data := layer.get_cell_tile_data(cell)
+			if data != null:
+				var v = data.get_custom_data("type")
+				if v is String:
+					t = v
+			w = float(JIGGLE_TILES.get(t, 0.0))
+		img.set_pixel(cell.x - rect.position.x, cell.y - rect.position.y, Color(w, 1.0, 0.0))
+	grid_tex = ImageTexture.create_from_image(img)
+	
+	var tile_px := Vector2(layer.tile_set.tile_size)
+	var origin := layer.to_global(layer.map_to_local(Vector2i.ZERO) - tile_px * 0.5)
+	jiggle_mat.set_shader_parameter("cell_data", grid_tex)
+	jiggle_mat.set_shader_parameter("grid_origin", origin)
+	jiggle_mat.set_shader_parameter("cell_size", tile_px * layer.global_scale)
+	jiggle_mat.set_shader_parameter("grid_min", rect.position)
+	jiggle_mat.set_shader_parameter("grid_size", rect.size)
+
+# ---------------------------------------------------------------------------
+# AUDIO
+# ---------------------------------------------------------------------------
 func _setup_audio() -> void:
-	jump_sounds = _load_sounds(jump_keyword)
-	land_sounds = _load_sounds(land_keyword)
-	move_sounds = _load_sounds(move_keyword)
+	sound_bank = {
+		"jump": _load_sound_bank(jump_keyword),
+		"land": _load_sound_bank(land_keyword),
+		"move": _load_sound_bank(move_keyword),
+	}
 	
 	jump_player = AudioStreamPlayer.new()
 	land_player = AudioStreamPlayer.new()
@@ -193,35 +396,49 @@ func _setup_audio() -> void:
 	land_player.volume_db = land_volume_db
 	move_player.volume_db = -80.0
 	
-	# fallback: if a moving sound isn't set to loop and ends, start another
 	move_player.finished.connect(_on_move_finished)
 
-func _load_sounds(keyword: String) -> Array[AudioStream]:
-	var result: Array[AudioStream] = []
+func _sound_type_of(file_lower: String) -> String:
+	var best := "default"
+	var best_len := 0
+	for t in SOUND_TYPES:
+		if file_lower.contains(t) and t.length() > best_len:
+			best = t
+			best_len = t.length()
+	return best
+
+func _load_sound_bank(keyword: String) -> Dictionary:
+	var bank := {}
 	var dir := DirAccess.open(audio_folder)
 	if dir == null:
 		push_warning("AUDIO: folder not found: " + audio_folder)
-		return result
+		return bank
 	
+	var seen := {}
 	for file in dir.get_files():
-		# exported games list files as name.ext.import / name.ext.remap
 		var f := file.trim_suffix(".import").trim_suffix(".remap")
 		var ext := f.get_extension().to_lower()
 		if ext != "wav" and ext != "ogg" and ext != "mp3":
 			continue
-		if not f.to_lower().contains(keyword.to_lower()):
+		var lower := f.to_lower()
+		if not lower.contains(keyword.to_lower()):
 			continue
+		if seen.has(f):
+			continue
+		seen[f] = true
 		var res: Resource = load(audio_folder.path_join(f))
 		if res is AudioStream:
 			var s: AudioStream = res as AudioStream
 			if keyword == move_keyword:
 				s = _make_loop(s)
-			if not result.has(s):
-				result.append(s)
+			var key := _sound_type_of(lower)
+			if not bank.has(key):
+				bank[key] = []
+			bank[key].append(s)
 	
-	if result.is_empty():
+	if bank.is_empty():
 		push_warning("AUDIO: no files containing '" + keyword + "' in " + audio_folder)
-	return result
+	return bank
 
 func _make_loop(s: AudioStream) -> AudioStream:
 	var c: AudioStream = s.duplicate() as AudioStream
@@ -239,46 +456,70 @@ func _make_loop(s: AudioStream) -> AudioStream:
 			w.loop_end = w.data.size() / (bytes * channels)
 	return c
 
-func play_random(player: AudioStreamPlayer, sounds: Array[AudioStream], pitch_min: float, pitch_max: float) -> void:
-	if player == null or sounds.is_empty():
+func _sound_list(action: String, tile_type: String) -> Array:
+	var bank: Dictionary = sound_bank.get(action, {})
+	var list: Array = bank.get(tile_type, [])
+	if list.is_empty():
+		list = bank.get("default", [])
+	return list
+
+func play_sound(player: AudioStreamPlayer, action: String, tile_type: String, pitch_min: float, pitch_max: float) -> void:
+	if player == null:
 		return
-	player.stream = sounds.pick_random()
+	var list := _sound_list(action, tile_type)
+	if list.is_empty():
+		return
+	player.stream = list.pick_random()
 	player.pitch_scale = randf_range(pitch_min, pitch_max)
 	player.play()
 
+func _start_move_stream() -> void:
+	move_type = last_floor_type
+	var list := _sound_list("move", move_type)
+	if list.is_empty():
+		return
+	move_player.stream = list.pick_random()
+	move_player.play()
+
+func _stop_move_sound() -> void:
+	move_active = false
+	move_amount = 0.0
+	if move_player != null:
+		move_player.stop()
+
 func _on_move_finished() -> void:
-	if move_active and not move_sounds.is_empty():
-		move_player.stream = move_sounds.pick_random()
-		move_player.play()
+	if move_active:
+		_start_move_stream()
 
 func _update_move_sound(delta: float, grounded: bool) -> void:
-	if move_player == null or move_sounds.is_empty():
+	if move_player == null:
 		return
 	
 	var spd: float = abs(velocity.x)
-	var wants_sound: bool = grounded and spd > move_min_speed
+	var wants_sound: bool = grounded and spd > move_min_speed and not _sound_list("move", last_floor_type).is_empty()
 	
 	if wants_sound:
 		move_idle_time = 0.0
 		if not move_active:
 			move_active = true
 			move_amount = 0.0
-			move_player.stream = move_sounds.pick_random()
-			move_player.play()
+			_start_move_stream()
+		elif move_type != last_floor_type:
+			_start_move_stream()  
 	else:
 		move_idle_time += delta
 		if move_active and move_idle_time > move_stop_delay:
-			move_active = false
-			move_amount = 0.0
-			move_player.stop()
+			_stop_move_sound()
 			return
 	
 	if move_active:
-		# volume follows speed, and fades down while waiting to stop
 		var target: float = clamp(spd / move_full_speed, 0.0, 1.0) if wants_sound else 0.0
 		move_amount = lerp(move_amount, target, 1.0 - exp(-move_volume_ease * delta))
 		move_player.volume_db = linear_to_db(max(move_amount, 0.0001)) + move_max_volume_db
 
+# ---------------------------------------------------------------------------
+# JELLY
+# ---------------------------------------------------------------------------
 func _apply_material() -> void:
 	if water_tile_map == null:
 		return
@@ -289,18 +530,119 @@ func _apply_material() -> void:
 func add_ripple(amount: float) -> void:
 	ripple = min(ripple + amount, max_ripple)
 
-func die():
+# ---------------------------------------------------------------------------
+# DEATH
+# ---------------------------------------------------------------------------
+func _random_death_message() -> String:
+	if DEATH_MESSAGES.is_empty():
+		return ""
+	var msg: String = DEATH_MESSAGES.pick_random()
+	if DEATH_MESSAGES.size() > 1:
+		while msg == last_death_message:
+			msg = DEATH_MESSAGES.pick_random()
+	last_death_message = msg
+	return msg
+
+func _ensure_transition() -> void:
+	if transition_layer != null and is_instance_valid(transition_layer):
+		return
+	
+	var slash_shader := Shader.new()
+	slash_shader.code = SLASH_SHADER
+	slash_mat = ShaderMaterial.new()
+	slash_mat.shader = slash_shader
+	slash_mat.set_shader_parameter("mask_color", transition_color)
+	slash_mat.set_shader_parameter("power", slash_power)
+	
+	var square_shader := Shader.new()
+	square_shader.code = SQUARE_SHADER
+	square_mat = ShaderMaterial.new()
+	square_mat.shader = square_shader
+	square_mat.set_shader_parameter("mask_color", transition_color)
+	
+	transition_layer = CanvasLayer.new()
+	transition_layer.layer = 100
+	transition_layer.visible = false
+	
+	transition_rect = ColorRect.new()
+	transition_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	transition_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	transition_layer.add_child(transition_rect)
+	
+	transition_label = Label.new()
+	transition_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	transition_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	transition_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	transition_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	transition_label.add_theme_font_size_override("font_size", death_text_size)
+	transition_label.add_theme_color_override("font_color", Color.WHITE)
+	transition_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	transition_label.add_theme_constant_override("outline_size", 16)
+	if death_font != null:
+		transition_label.add_theme_font_override("font", death_font)
+	transition_label.rotation_degrees = -4.0
+	transition_label.resized.connect(func(): transition_label.pivot_offset = transition_label.size * 0.5)
+	transition_label.visible = false
+	transition_layer.add_child(transition_label)
+	
+	var host: Node = get_tree().current_scene
+	if host == null:
+		host = get_tree().root
+	host.add_child(transition_layer)
+
+func _run_transition(mat: ShaderMaterial, from_t: float, to_t: float, time: float) -> void:
+	transition_rect.material = mat
+	mat.set_shader_parameter("t", from_t)
+	var tw := create_tween()
+	tw.tween_method(func(v: float): mat.set_shader_parameter("t", v), from_t, to_t, time)
+	await tw.finished
+
+func _pop_death_label(text: String) -> void:
+	transition_label.text = text
+	transition_label.visible = true
+	transition_label.modulate.a = 0.0
+	transition_label.scale = Vector2(1.5, 1.5)
+	transition_label.rotation_degrees = -4.0
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(transition_label, "modulate:a", 1.0, 0.12)
+	tw.tween_property(transition_label, "scale", Vector2.ONE, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+func _hide_death_label() -> void:
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(transition_label, "modulate:a", 0.0, 0.3)
+	tw.tween_property(transition_label, "scale", Vector2(1.4, 1.4), 0.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.tween_property(transition_label, "rotation_degrees", -9.0, 0.3)
+
+func die() -> void:
+	if dying:
+		return
+	dying = true
+	velocity = Vector2.ZERO
+	_stop_move_sound()
+	_ensure_transition()
+	transition_label.visible = false
+	transition_layer.visible = true
+	
+	await _run_transition(slash_mat, 0.0, 1.0, close_time)
+	
 	respawn()
-	var deathScreen = owner.get_node("CanvasLayer").get_node("deathScreen")
-	deathScreen.show()
-	await get_tree().create_timer(2.0).timeout
-	deathScreen.hide()
+	_pop_death_label(_random_death_message())
+	await get_tree().create_timer(hold_time).timeout
+	
+	_hide_death_label()
+	await _run_transition(square_mat, 0.0, 1.0, open_time)
+	transition_label.visible = false
+	transition_layer.visible = false
+	dying = false
 
 func respawn() -> void:
 	stuck = false
 	position = respawn_node.global_position
 	velocity = Vector2.ZERO
 	dent_pos_ready = false
+	var cam := get_node_or_null("camera") as Camera2D
+	if cam != null:
+		cam.reset_smoothing()
 
 func on_hit(body: Node):
 	if body.name != "slime" || (body.get_meta_list().has("type") && body.get_meta("type") != "red"): return
@@ -310,6 +652,29 @@ func _process(_delta):
 	bounce = 0.1 if Input.is_action_pressed("down") else ogbounce
 	speed = 150 if Input.is_action_pressed("run") else 100
 
+func _tile_is_solid(layer: TileMapLayer, world_pos: Vector2) -> bool:
+	var cell := layer.local_to_map(layer.to_local(world_pos))
+	var data := layer.get_cell_tile_data(cell)
+	if data == null:
+		return false
+	var ts := layer.tile_set
+	if ts == null or ts.get_physics_layers_count() == 0:
+		return true
+	for i in ts.get_physics_layers_count():
+		if data.get_collision_polygons_count(i) > 0:
+			return true
+	return false
+
+func _is_sticky_ceiling(layer: TileMapLayer, collide: KinematicCollision2D) -> bool:
+	var p: Vector2 = collide.get_position() - collide.get_normal() * 3.0
+	if get_tile_type(layer, p) != "sticky":
+		return false
+	for dx in [-stick_span, -stick_span * 0.5, stick_span * 0.5, stick_span]:
+		var q: Vector2 = p + Vector2(dx, 0)
+		if _tile_is_solid(layer, q) and get_tile_type(layer, q) != "sticky":
+			return false
+	return true
+
 func _start_stick() -> void:
 	stuck = true
 	stick_left = stick_time
@@ -318,9 +683,13 @@ func _start_stick() -> void:
 func _release_stick() -> void:
 	stuck = false
 	stick_cd = stick_cooldown
-	velocity.y = 100.0   # small push so you drop off the ceiling
+	velocity.y = 100.0 
 
 func _physics_process(delta: float):
+	if dying:
+		velocity = Vector2.ZERO
+		return
+	
 	var direction := int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
 	var jumped := false
 	stick_cd = max(stick_cd - delta, 0.0)
@@ -329,7 +698,7 @@ func _physics_process(delta: float):
 	if stuck:
 		stick_left -= delta
 		velocity.x = direction * speed * stick_move_speed
-		velocity.y = -60.0   # keeps you pressed into the ceiling
+		velocity.y = -60.0   
 		if stick_left <= 0.0 or Input.is_action_just_pressed("jump") or Input.is_action_pressed("down"):
 			_release_stick()
 	elif !onfloor:
@@ -339,11 +708,13 @@ func _physics_process(delta: float):
 			velocity.x += direction * (speed / 10)
 	else:
 		if Input.is_action_pressed("jump"):
-			velocity.y -= jumpPower
+			var jump_mul: float = 1.0 if JIGGLE_TILES.has(ground_tile) else plain_jump_mul
+			velocity.y = min(velocity.y, -jumpPower * jump_mul)   
 			jumped = true
 		if direction:
-			velocity.x += direction * speed * surf.get("speed", 1.0)
-		velocity.x *= surf.get("friction", friction)
+			var default_speed_mul: float = ground_speed_mul if ground_tile == "" else 1.0
+			velocity.x += direction * speed * float(surf.get("speed", default_speed_mul))
+		velocity.x *= float(surf.get("friction", friction))
 	
 	last_v = velocity
 	
@@ -352,7 +723,22 @@ func _physics_process(delta: float):
 	onfloor = false
 	falling += 1
 	var new_surf := {}
+	var new_ground := ""
+	var got_floor := false
 	var touching_sticky := false
+	
+#kyle, this part should only work if the block is sticky, but it doesnt work right now
+	var ceiling_sticky := false
+	var ceiling_plain := false
+	for i in get_slide_collision_count():
+		var c := get_slide_collision(i)
+		if c != null and c.get_normal().y > 0.5 and c.get_collider() is TileMapLayer:
+			if _is_sticky_ceiling(c.get_collider() as TileMapLayer, c):
+				ceiling_sticky = true
+			else:
+				ceiling_plain = true
+	var can_stick: bool = ceiling_sticky and not ceiling_plain
+	
 	for i in get_slide_collision_count():
 		var collide = get_slide_collision(i)
 		if collide:
@@ -365,12 +751,17 @@ func _physics_process(delta: float):
 				if tile in HAZARDS:
 					die()
 					return
-				if normal.y < -0.5 and SURFACES.has(tile):
-					new_surf = SURFACES[tile]
-				# ceiling stick: tile is above you (normal points down)
-				if normal.y > 0.5 and tile == "sticky":
+				if normal.y < -0.5:
+					new_ground = tile
+					got_floor = true
+					if SURFACES.has(tile):
+						new_surf = SURFACES[tile]
+				if normal.y > 0.5 and can_stick:
 					touching_sticky = true
 					if not stuck and stick_cd <= 0.0:
+						if debug_stick:
+							var sc: Vector2i = body.local_to_map(body.to_local(collide.get_position() - normal * 3.0))
+							print("STICK on tile type '", tile, "' cell ", sc, " atlas ", body.get_cell_atlas_coords(sc))
 						_start_stick()
 			
 			if body.name == "slime" && body.get_meta("type") == "purple":
@@ -379,7 +770,7 @@ func _physics_process(delta: float):
 				var mul = (1 if body.name == "slime" && body.get_meta("type") == "red" else 1.7)
 				mul *= SURFACES.get(tile, {}).get("bounce_mul", 1.0)
 				if normal.dot(Vector2.UP):
-					velocity.y = last_v.y * -bounce * mul
+					velocity.y = clamp(last_v.y * -bounce * mul, -max_bounce_speed, max_bounce_speed)
 					onfloor = true
 					falling = 0
 				elif normal.dot(Vector2.DOWN):
@@ -388,40 +779,45 @@ func _physics_process(delta: float):
 					velocity.x = last_v.x * -bounce * mul
 					$boing.play()
 	if stuck and not touching_sticky:
-		_release_stick()   # slid off the edge of the sticky tiles
+		_release_stick()   
 	surf = new_surf
+	ground_tile = new_ground
+	if got_floor:
+		last_floor_type = new_ground
+		last_floor_jiggly = JIGGLE_TILES.has(new_ground)
 	
 	if abs(velocity.y) < 0.1 && falling < 1:
 		onfloor = true
 	
 	if position.y > 1500:
-		respawn()
+		die()
+		return
 	
 	if onfloor:
 		ground_timer = ground_grace
 	else:
 		ground_timer = max(ground_timer - delta, 0.0)
-	
-	# jump: small, light squash in a small area
 	if jumped and was_grounded:
-		press = jump_squash_depth
-		press_vel = 0.0
-		radius_scale = jump_radius_scale
-		add_ripple(jump_ripple)
 		ground_timer = 0.0
-		play_random(jump_player, jump_sounds, jump_pitch_min, jump_pitch_max)
+		play_sound(jump_player, "jump", last_floor_type, jump_pitch_min, jump_pitch_max)
+		if last_floor_jiggly:
+			press = jump_squash_depth
+			press_vel = 0.0
+			radius_scale = jump_radius_scale
+			add_ripple(jump_ripple)
 	
 	var grounded := ground_timer > 0.0
 	
-	# landing: full radius, strong hit (cooldown so bouncing doesn't spam it)
-	if grounded and not was_grounded and abs(last_v.y) > min_land_speed and land_cd <= 0.0 and not stuck:
-		land_cd = land_cooldown
-		dent_pos = global_position + feet_offset
-		radius_scale = 1.0
-		press_vel += abs(last_v.y) * land_press
-		add_ripple(clamp(abs(last_v.y) / land_ripple_scale, 0.3, max_ripple))
-		play_random(land_player, land_sounds, land_pitch_min, land_pitch_max)
-	elif onfloor and abs(velocity.x) > 20.0:
+	var landed: bool = grounded and not was_grounded and abs(last_v.y) > min_land_speed and not stuck
+	if landed:
+		play_sound(land_player, "land", last_floor_type, land_pitch_min, land_pitch_max)
+		if last_floor_jiggly and land_cd <= 0.0:
+			land_cd = land_cooldown
+			dent_pos = global_position + feet_offset
+			radius_scale = 1.0
+			press_vel += abs(last_v.y) * land_press
+			add_ripple(clamp(abs(last_v.y) / land_ripple_scale, 0.3, max_ripple))
+	elif onfloor and abs(velocity.x) > 20.0 and last_floor_jiggly:
 		add_ripple(min(abs(velocity.x) / speed, 1.0) * run_ripple * delta)
 	
 	was_grounded = grounded
@@ -430,7 +826,6 @@ func _physics_process(delta: float):
 	_update_move_sound(delta, grounded)
 
 func _update_jelly(delta: float, grounded: bool) -> void:
-	# ripples fade out over ripple_duration seconds
 	if debug_always_jiggle:
 		ripple = abs(sin(Time.get_ticks_msec() / 200.0))
 	else:
@@ -438,12 +833,10 @@ func _update_jelly(delta: float, grounded: bool) -> void:
 		if ripple < 0.005:
 			ripple = 0.0
 	
-	# radius: small in the air, full on the ground
 	var target_scale := 1.0 if grounded else jump_radius_scale
 	radius_scale = lerp(radius_scale, target_scale, 1.0 - exp(-radius_ease * delta))
 	
-	# held dent spring
-	var target := press_depth if grounded else 0.0
+	var target := press_depth if (grounded and last_floor_jiggly) else 0.0
 	press_vel += ((target - press) * press_stiffness - press_vel * press_damping) * delta
 	press += press_vel * delta
 	press = clamp(press, -max_press, max_press)
@@ -454,7 +847,6 @@ func _update_jelly(delta: float, grounded: bool) -> void:
 	if water_tile_map == null:
 		return
 	
-	# dent trails behind you on the ground, and stays at the launch spot in the air
 	var feet := global_position + feet_offset
 	if not dent_pos_ready:
 		dent_pos = feet
@@ -462,10 +854,9 @@ func _update_jelly(delta: float, grounded: bool) -> void:
 	if grounded:
 		dent_pos = dent_pos.lerp(feet, 1.0 - exp(-follow_speed * delta))
 	
-	# fade the whole effect down while stuck to a ceiling, and back up after
 	var target_jiggle := stuck_jiggle_scale if stuck else 1.0
 	jiggle_scale = lerp(jiggle_scale, target_jiggle, 1.0 - exp(-jiggle_scale_ease * delta))
-	var radius_mul: float = max(jiggle_scale, 0.05)   # keep radii above zero so the shader never divides by 0
+	var radius_mul: float = max(jiggle_scale, 0.05)   
 	
 	_apply_material()
 	jiggle_mat.set_shader_parameter("player_pos", dent_pos)
@@ -476,4 +867,5 @@ func _update_jelly(delta: float, grounded: bool) -> void:
 	jiggle_mat.set_shader_parameter("press", press * jiggle_scale)
 	jiggle_mat.set_shader_parameter("strength", ripple * jiggle_scale)
 	jiggle_mat.set_shader_parameter("frequency", wave_frequency)
+	jiggle_mat.set_shader_parameter("edge_lock", edge_lock)
 	jiggle_mat.set_shader_parameter("push", wave_push * jiggle_scale)
