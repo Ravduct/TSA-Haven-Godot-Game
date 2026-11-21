@@ -52,7 +52,7 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l4wpc"]
-size = Vector2(71, 138)
+size = Vector2(64.5, 138)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1vrpp"]
 
@@ -127,9 +127,6 @@ animations = [{
 "name": &"default",
 "speed": 3.0
 }]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8gofh"]
-size = Vector2(1476, 1283.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_556r4"]
 size = Vector2(577.30566, 169.28104)
@@ -228,9 +225,6 @@ shader_parameter/wave_height = 0.0250000011875
 [sub_resource type="Gradient" id="Gradient_b121j"]
 offsets = PackedFloat32Array(0, 0.75123155, 0.93842363, 0.99753696)
 colors = PackedColorArray(1, 1, 1, 1, 0.6666667, 0.8509804, 0.8535948, 0.6666667, 0.20246914, 0.6434568, 0.64971197, 0.20246914, 0, 0.5529412, 0.56078434, 0)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h6wmr"]
-size = Vector2(4602, 552)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bkp3o"]
 size = Vector2(729, 150.1634)
@@ -1073,6 +1067,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="start" type="AnimatedSprite2D" parent="CanvasLayer" unique_id=845638361]
+visible = false
 sprite_frames = SubResource("SpriteFrames_l4wpc")
 offset = Vector2(576, 324)
 script = ExtResource("19_50fbu")
@@ -1356,55 +1351,6 @@ debug_color = Color(0, 0.5981013, 0.7127266, 0.41960785)
 scale = Vector2(544, 109.5)
 texture = SubResource("CanvasTexture_w7c3h")
 
-[node name="jarona3" type="Area2D" parent="level" unique_id=412496072]
-position = Vector2(5704, -281)
-script = ExtResource("19_8gofh")
-
-[node name="ColorRect" type="ColorRect" parent="level/jarona3" unique_id=1202807780]
-z_index = -1
-material = SubResource("ShaderMaterial_klq6b")
-offset_left = 953.0
-offset_top = 623.0
-offset_right = 5650.0
-offset_bottom = 1311.0
-metadata/_edit_use_anchors_ = true
-
-[node name="bubbles" type="CPUParticles2D" parent="level/jarona3/ColorRect" unique_id=1474162010]
-position = Vector2(2431, 681)
-amount = 100
-texture = ExtResource("2_ppgk2")
-preprocess = 1.03
-explosiveness = 0.07
-randomness = 0.54
-emission_shape = 3
-emission_rect_extents = Vector2(22000, 5)
-gravity = Vector2(0, -300)
-scale_amount_min = 0.01
-scale_amount_max = 0.1
-color_ramp = SubResource("Gradient_b121j")
-
-[node name="hitbox" type="CollisionShape2D" parent="level/jarona3" unique_id=2030589589]
-position = Vector2(3309, 1021)
-shape = SubResource("RectangleShape2D_h6wmr")
-
-[node name="jarona2" type="Area2D" parent="level" unique_id=225764960]
-position = Vector2(-154, -359)
-script = ExtResource("19_8gofh")
-
-[node name="ColorRect" type="ColorRect" parent="level/jarona2" unique_id=1943134283]
-z_index = -1
-material = SubResource("ShaderMaterial_klq6b")
-offset_left = 2985.0
-offset_top = 975.0
-offset_right = 3709.0
-offset_bottom = 1230.0
-
-[node name="bubbles" type="CPUParticles2D" parent="level/jarona2/ColorRect" unique_id=1328394043]
-
-[node name="hitbox" type="CollisionShape2D" parent="level/jarona2" unique_id=1310096364]
-position = Vector2(3339.5, 1083.5)
-shape = SubResource("RectangleShape2D_bkp3o")
-
 [node name="jarona geyser" type="Area2D" parent="level" unique_id=1585013713]
 position = Vector2(-643, -3890)
 scale = Vector2(4.34358, 4.6503396)
@@ -1489,100 +1435,6 @@ shape = SubResource("RectangleShape2D_6moqy")
 
 [node name="Timer" type="Timer" parent="level/jarona geyser/geyser2" unique_id=249031116]
 autostart = true
-
-[node name="jarona" type="Area2D" parent="level" unique_id=1900548375]
-position = Vector2(1104, -349)
-script = ExtResource("19_8gofh")
-
-[node name="ColorRect" type="ColorRect" parent="level/jarona" unique_id=40623188]
-z_index = -1
-material = SubResource("ShaderMaterial_klq6b")
-offset_left = 2985.0
-offset_top = 975.0
-offset_right = 3709.0
-offset_bottom = 1230.0
-
-[node name="bubbles" type="CPUParticles2D" parent="level/jarona/ColorRect" unique_id=411832932]
-position = Vector2(296, 220)
-amount = 20
-texture = ExtResource("2_ppgk2")
-preprocess = 1.03
-explosiveness = 0.07
-randomness = 0.54
-emission_shape = 3
-emission_rect_extents = Vector2(300, 5)
-gravity = Vector2(0, -300)
-scale_amount_min = 0.01
-scale_amount_max = 0.1
-color_ramp = SubResource("Gradient_b121j")
-
-[node name="hitbox" type="CollisionShape2D" parent="level/jarona" unique_id=1439656498]
-position = Vector2(3339.5, 1083.5)
-shape = SubResource("RectangleShape2D_bkp3o")
-
-[node name="jarona4" type="Area2D" parent="level" unique_id=950907733]
-position = Vector2(19472, 300)
-scale = Vector2(3.0800097, 1)
-script = ExtResource("19_8gofh")
-
-[node name="ColorRect" type="ColorRect" parent="level/jarona4" unique_id=314480291]
-z_index = -1
-material = SubResource("ShaderMaterial_klq6b")
-offset_left = -355.0
-offset_top = -92.0
-offset_right = 369.0
-offset_bottom = 163.0
-metadata/_edit_use_anchors_ = true
-
-[node name="bubbles" type="CPUParticles2D" parent="level/jarona4/ColorRect" unique_id=876403121]
-position = Vector2(296, 220)
-amount = 20
-texture = ExtResource("2_ppgk2")
-preprocess = 1.03
-explosiveness = 0.07
-randomness = 0.54
-emission_shape = 3
-emission_rect_extents = Vector2(300, 5)
-gravity = Vector2(0, -300)
-scale_amount_min = 0.01
-scale_amount_max = 0.1
-color_ramp = SubResource("Gradient_b121j")
-
-[node name="hitbox" type="CollisionShape2D" parent="level/jarona4" unique_id=935130774]
-position = Vector2(-0.5, 16.5)
-shape = SubResource("RectangleShape2D_bkp3o")
-
-[node name="jarona5" type="Area2D" parent="level" unique_id=983564002]
-position = Vector2(22069, 958)
-scale = Vector2(3.0800097, 1)
-script = ExtResource("19_8gofh")
-
-[node name="ColorRect" type="ColorRect" parent="level/jarona5" unique_id=142282768]
-z_index = -1
-material = SubResource("ShaderMaterial_klq6b")
-offset_left = -355.0
-offset_top = -92.0
-offset_right = 369.0
-offset_bottom = 163.0
-metadata/_edit_use_anchors_ = true
-
-[node name="bubbles" type="CPUParticles2D" parent="level/jarona5/ColorRect" unique_id=1116904693]
-position = Vector2(296, 220)
-amount = 20
-texture = ExtResource("2_ppgk2")
-preprocess = 1.03
-explosiveness = 0.07
-randomness = 0.54
-emission_shape = 3
-emission_rect_extents = Vector2(300, 5)
-gravity = Vector2(0, -300)
-scale_amount_min = 0.01
-scale_amount_max = 0.1
-color_ramp = SubResource("Gradient_b121j")
-
-[node name="hitbox" type="CollisionShape2D" parent="level/jarona5" unique_id=1205179654]
-position = Vector2(-0.5, 16.5)
-shape = SubResource("RectangleShape2D_bkp3o")
 
 [node name="win" type="Area2D" parent="." unique_id=873392877]
 position = Vector2(23514, -460)

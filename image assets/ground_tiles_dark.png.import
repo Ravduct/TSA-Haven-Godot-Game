@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cohi2m23blvuw"
-path="res://.godot/imported/2026_11_15_08j_Kleki_02_jello_tileset.png.png-aa4f7aef357bb5c6bebb6e3d1a16e469.ctex"
+uid="uid://c2yx4e1aktd3"
+path="res://.godot/imported/ground_tiles_dark.png-593cf29aec4f31652abdc791d6545c14.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://image assets/2026_11_15_08j_Kleki_02_jello_tileset.png.png"
-dest_files=["res://.godot/imported/2026_11_15_08j_Kleki_02_jello_tileset.png.png-aa4f7aef357bb5c6bebb6e3d1a16e469.ctex"]
+source_file="res://image assets/ground_tiles_dark.png"
+dest_files=["res://.godot/imported/ground_tiles_dark.png-593cf29aec4f31652abdc791d6545c14.ctex"]
 
 [params]
 
