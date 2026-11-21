@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bkchax3mqx5hn"
-path="res://.godot/imported/ground_tiles.webp-4d44bfc6a34dfd3adeb60082b68a63ec.ctex"
+uid="uid://c2yx4e1aktd3"
+path="res://.godot/imported/ground_tiles_dark.png-593cf29aec4f31652abdc791d6545c14.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://image assets/ground_tiles.webp"
-dest_files=["res://.godot/imported/ground_tiles.webp-4d44bfc6a34dfd3adeb60082b68a63ec.ctex"]
+source_file="res://image assets/ground_tiles_dark.png"
+dest_files=["res://.godot/imported/ground_tiles_dark.png-593cf29aec4f31652abdc791d6545c14.ctex"]
 
 [params]
 

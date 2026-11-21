@@ -647,169 +647,9 @@ func respawn() -> void:
 func on_hit(body: Node):
 	if body.name != "slime" || (body.get_meta_list().has("type") && body.get_meta("type") != "red"): return
 	die()
-	
-func _process(_delta):
-	bounce = 0.1 if Input.is_action_pressed("down") else ogbounce
-	speed = 150 if Input.is_action_pressed("run") else 100
 
-func _tile_is_solid(layer: TileMapLayer, world_pos: Vector2) -> bool:
-	var cell := layer.local_to_map(layer.to_local(world_pos))
-	var data := layer.get_cell_tile_data(cell)
-	if data == null:
-		return false
-	var ts := layer.tile_set
-	if ts == null or ts.get_physics_layers_count() == 0:
-		return true
-	for i in ts.get_physics_layers_count():
-		if data.get_collision_polygons_count(i) > 0:
-			return true
-	return false
-
-func _is_sticky_ceiling(layer: TileMapLayer, collide: KinematicCollision2D) -> bool:
-	var p: Vector2 = collide.get_position() - collide.get_normal() * 3.0
-	if get_tile_type(layer, p) != "sticky":
-		return false
-	for dx in [-stick_span, -stick_span * 0.5, stick_span * 0.5, stick_span]:
-		var q: Vector2 = p + Vector2(dx, 0)
-		if _tile_is_solid(layer, q) and get_tile_type(layer, q) != "sticky":
-			return false
-	return true
-
-func _start_stick() -> void:
-	stuck = true
-	stick_left = stick_time
-	velocity = Vector2.ZERO
-
-func _release_stick() -> void:
-	stuck = false
-	stick_cd = stick_cooldown
-	velocity.y = 100.0 
-
-func _physics_process(delta: float):
-	if dying:
-		velocity = Vector2.ZERO
-		return
-	
-	var direction := int(Input.is_action_pressed("right")) - int(Input.is_action_pressed("left"))
-	var jumped := false
-	stick_cd = max(stick_cd - delta, 0.0)
-	land_cd = max(land_cd - delta, 0.0)
-	
-	if stuck:
-		stick_left -= delta
-		velocity.x = direction * speed * stick_move_speed
-		velocity.y = -60.0   
-		if stick_left <= 0.0 or Input.is_action_just_pressed("jump") or Input.is_action_pressed("down"):
-			_release_stick()
-	elif !onfloor:
-		velocity.y += gravity * delta
-		velocity.x *= air_res
-		if direction:
-			velocity.x += direction * (speed / 10)
-	else:
-		if Input.is_action_pressed("jump"):
-			var jump_mul: float = 1.0 if JIGGLE_TILES.has(ground_tile) else plain_jump_mul
-			velocity.y = min(velocity.y, -jumpPower * jump_mul)   
-			jumped = true
-		if direction:
-			var default_speed_mul: float = ground_speed_mul if ground_tile == "" else 1.0
-			velocity.x += direction * speed * float(surf.get("speed", default_speed_mul))
-		velocity.x *= float(surf.get("friction", friction))
-	
-	last_v = velocity
-	
-	move_and_slide()
-	
-	onfloor = false
-	falling += 1
-	var new_surf := {}
-	var new_ground := ""
-	var got_floor := false
-	var touching_sticky := false
-	
-#kyle, this part should only work if the block is sticky, but it doesnt work right now
-	var ceiling_sticky := false
-	var ceiling_plain := false
-	for i in get_slide_collision_count():
-		var c := get_slide_collision(i)
-		if c != null and c.get_normal().y > 0.5 and c.get_collider() is TileMapLayer:
-			if _is_sticky_ceiling(c.get_collider() as TileMapLayer, c):
-				ceiling_sticky = true
-			else:
-				ceiling_plain = true
-	var can_stick: bool = ceiling_sticky and not ceiling_plain
-	
-	for i in get_slide_collision_count():
-		var collide = get_slide_collision(i)
-		if collide:
-			var normal = collide.get_normal()
-			var body = collide.get_collider()
-			
-			var tile := ""
-			if body is TileMapLayer:
-				tile = get_tile_type(body, collide.get_position() - normal * 2.0)
-				if tile in HAZARDS:
-					die()
-					return
-				if normal.y < -0.5:
-					new_ground = tile
-					got_floor = true
-					if SURFACES.has(tile):
-						new_surf = SURFACES[tile]
-				if normal.y > 0.5 and can_stick:
-					touching_sticky = true
-					if not stuck and stick_cd <= 0.0:
-						if debug_stick:
-							var sc: Vector2i = body.local_to_map(body.to_local(collide.get_position() - normal * 3.0))
-							print("STICK on tile type '", tile, "' cell ", sc, " atlas ", body.get_cell_atlas_coords(sc))
-						_start_stick()
-			
-			if body.name == "slime" && body.get_meta("type") == "purple":
-				body.apply_central_impulse(normal * -velocity.length()/10)
-			if boingboing and not stuck:
-				var mul = (1 if body.name == "slime" && body.get_meta("type") == "red" else 1.7)
-				mul *= SURFACES.get(tile, {}).get("bounce_mul", 1.0)
-				if normal.dot(Vector2.UP):
-					velocity.y = clamp(last_v.y * -bounce * mul, -max_bounce_speed, max_bounce_speed)
-					onfloor = true
-					falling = 0
-				elif normal.dot(Vector2.DOWN):
-					velocity.y = last_v.y * -bounce * mul
-				else:
-					velocity.x = last_v.x * -bounce * mul
-					$boing.play()
-	if stuck and not touching_sticky:
-		_release_stick()   
-	surf = new_surf
-	ground_tile = new_ground
-	if got_floor:
-		last_floor_type = new_ground
-		last_floor_jiggly = JIGGLE_TILES.has(new_ground)
-	
-	if abs(velocity.y) < 0.1 && falling < 1:
-		onfloor = true
-	
-	if position.y > 1500:
-		die()
-		return
-	
-	if onfloor:
-		ground_timer = ground_grace
-	else:
-		ground_timer = max(ground_timer - delta, 0.0)
-	if jumped and was_grounded:
-		ground_timer = 0.0
-		play_sound(jump_player, "jump", last_floor_type, jump_pitch_min, jump_pitch_max)
-		if last_floor_jiggly:
-			press = jump_squash_depth
-			press_vel = 0.0
-			radius_scale = jump_radius_scale
-			add_ripple(jump_ripple)
-	
-	var grounded := ground_timer > 0.0
-	
-	var landed: bool = grounded and not was_grounded and abs(last_v.y) > min_land_speed and not stuck
-	if landed:
+func onStateChange(s):
+	if s == 5:
 		play_sound(land_player, "land", last_floor_type, land_pitch_min, land_pitch_max)
 		if last_floor_jiggly and land_cd <= 0.0:
 			land_cd = land_cooldown
@@ -817,13 +657,11 @@ func _physics_process(delta: float):
 			radius_scale = 1.0
 			press_vel += abs(last_v.y) * land_press
 			add_ripple(clamp(abs(last_v.y) / land_ripple_scale, 0.3, max_ripple))
-	elif onfloor and abs(velocity.x) > 20.0 and last_floor_jiggly:
-		add_ripple(min(abs(velocity.x) / speed, 1.0) * run_ripple * delta)
+	elif last_floor_jiggly:
+		add_ripple(min(abs(velocity.x) / speed, 1.0) * run_ripple)
 	
-	was_grounded = grounded
-	
-	_update_jelly(delta, grounded)
-	_update_move_sound(delta, grounded)
+	#_update_jelly(delta, grounded)
+	#_update_move_sound(delta, grounded)
 
 func _update_jelly(delta: float, grounded: bool) -> void:
 	if debug_always_jiggle:
