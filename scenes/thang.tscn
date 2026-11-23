@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="3_ppgk2"]
 [ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_fpun6"]
 [ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
-[ext_resource type="Texture2D" uid="uid://cg3dbf4eu85f4" path="res://image assets/green_tileset.png" id="5_ppgk2"]
+[ext_resource type="Texture2D" uid="uid://jbtqbp7usr0h" path="res://image assets/green_tileset.png" id="5_ppgk2"]
 [ext_resource type="Script" uid="uid://05cjtwa7fklp" path="res://scripts/checkpoint_saved.gd" id="6_7agi7"]
 [ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
 [ext_resource type="Texture2D" uid="uid://wibq1wb3nhyr" path="res://image assets/1.png" id="7_535f6"]
@@ -439,12 +439,15 @@ sprite_frames = SubResource("SpriteFrames_bkp3o")
 
 [node name="Bite1" type="AudioStreamPlayer" parent="level/checkpoint2" unique_id=1689110431]
 stream = ExtResource("27_cr74b")
+bus = &"SFX"
 
 [node name="Bite2" type="AudioStreamPlayer" parent="level/checkpoint2" unique_id=1144411436]
 stream = ExtResource("28_uhfbm")
+bus = &"SFX"
 
 [node name="Bite3" type="AudioStreamPlayer" parent="level/checkpoint2" unique_id=2071217790]
 stream = ExtResource("29_lqb7q")
+bus = &"SFX"
 
 [node name="checkpoint" type="Area2D" parent="level" unique_id=308182329]
 position = Vector2(5646, 225)
@@ -461,12 +464,15 @@ sprite_frames = SubResource("SpriteFrames_bkp3o")
 
 [node name="Bite1" type="AudioStreamPlayer" parent="level/checkpoint" unique_id=1364042757]
 stream = ExtResource("27_cr74b")
+bus = &"SFX"
 
 [node name="Bite2" type="AudioStreamPlayer" parent="level/checkpoint" unique_id=444881457]
 stream = ExtResource("28_uhfbm")
+bus = &"SFX"
 
 [node name="Bite3" type="AudioStreamPlayer" parent="level/checkpoint" unique_id=1915660182]
 stream = ExtResource("29_lqb7q")
+bus = &"SFX"
 
 [node name="yellow" type="Area2D" parent="level" unique_id=1144792476]
 position = Vector2(-298, 825)
