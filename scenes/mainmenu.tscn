@@ -1,13 +1,11 @@
 [gd_scene format=3 uid="uid://dp5xjbnngysre"]
 
-[ext_resource type="Script" uid="uid://cd1wxoaopx1ag" path="res://scripts/planet.gd" id="1_4hago"]
-[ext_resource type="Texture2D" uid="uid://c7p7507kdt0rt" path="res://image assets/glow.png" id="2_wf3n4"]
-[ext_resource type="Texture2D" uid="uid://bdwn5no475nm7" path="res://image assets/planet.png" id="3_h73c4"]
+[ext_resource type="Texture2D" uid="uid://gjrqn0h5stmd" path="res://image assets/jelly planet better.png" id="2_gjjcl"]
 [ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://audio/planet_menu.mp3" id="4_85riq"]
 [ext_resource type="Texture2D" uid="uid://b4lwj0hcwkwvy" path="res://image assets/settings.png" id="5_4hago"]
 [ext_resource type="Script" uid="uid://cs6c358iiq2ou" path="res://scripts/settings_in.gd" id="5_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://df2a0gm1xymeb" path="res://image assets/CREDITS.png" id="6_gjjcl"]
-[ext_resource type="Texture2D" uid="uid://bfmgdre8ifces" path="res://image assets/play button.png" id="7_kait0"]
+[ext_resource type="Texture2D" uid="uid://cub4by34skgs3" path="res://image assets/PLAYBUTTON.png" id="6_uui5l"]
 [ext_resource type="Script" uid="uid://bqupbmcf45v33" path="res://scripts/credits.gd" id="7_wf3n4"]
 [ext_resource type="Script" uid="uid://c6yiovgjaqykt" path="res://scripts/play.gd" id="8_6pj40"]
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
@@ -19,10 +17,45 @@ _limits = [-360.0, 360.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_mti6b"]
-radius = 0.01
+[sub_resource type="Shader" id="Shader_uui5l"]
+code = "shader_type canvas_item;
 
-[sub_resource type="QuadMesh" id="QuadMesh_62yky"]
+uniform float aspect_ratio = 2;
+uniform float rotation_speed = 0.05;
+uniform bool as_shadow = true;
+ 
+void fragment() {
+	float px = 2.0 * (UV.x - 0.5);
+	float py = 2.0 * (UV.y - 0.5);
+	
+	if (px * px + py * py > 1.0) {
+		// Outside of \"sphere\"
+		COLOR.a = 0.0;
+	} else {
+		px = asin(px / sqrt(1.0 - py * py)) * 2.0 / PI;
+		py = asin(py) * 2.0 / PI;
+		
+		COLOR = texture(TEXTURE, vec2(
+			0.5 * (px + 1.0) / aspect_ratio - TIME * rotation_speed,
+			0.5 * (py + 1.0)));
+		if (as_shadow) {
+			COLOR.rgb = vec3(0.0, 0.0, 0.0);
+			COLOR.a *= 0.9;
+		}
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kait0"]
+shader = SubResource("Shader_uui5l")
+shader_parameter/aspect_ratio = 2.0
+shader_parameter/rotation_speed = 0.075
+shader_parameter/as_shadow = false
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6pj40"]
+shader = SubResource("Shader_uui5l")
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/rotation_speed = 0.1
+shader_parameter/as_shadow = false
 
 [node name="menu" type="Node2D" unique_id=58521646]
 
@@ -71,23 +104,15 @@ angle_max = 720.0
 angle_curve = SubResource("Curve_0e48y")
 scale_amount_max = 5.0
 
-[node name="planet" type="StaticBody2D" parent="." unique_id=476771476]
-position = Vector2(576, 324)
-scale = Vector2(400, 400)
-script = ExtResource("1_4hago")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="planet" unique_id=1939815446]
-shape = SubResource("CircleShape2D_mti6b")
-
-[node name="MeshInstance2D2" type="MeshInstance2D" parent="planet/CollisionShape2D" unique_id=1184034877]
-scale = Vector2(1.003, 1)
-mesh = SubResource("QuadMesh_62yky")
-texture = ExtResource("2_wf3n4")
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="planet/CollisionShape2D" unique_id=1007025205]
-scale = Vector2(1.004, 1)
-mesh = SubResource("QuadMesh_62yky")
-texture = ExtResource("3_h73c4")
+[node name="jelly planet" type="Sprite2D" parent="." unique_id=1328353640]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_kait0")
+position = Vector2(579.5288, 323.94052)
+rotation = 0.5663194
+scale = Vector2(0.18637924, 0.3304411)
+texture = ExtResource("2_gjjcl")
+region_enabled = true
+region_rect = Rect2(0, 0, 1269, 719)
 
 [node name="settings" type="Button" parent="." unique_id=1180905257]
 offset_left = 752.0
@@ -116,13 +141,15 @@ expand_icon = true
 script = ExtResource("7_wf3n4")
 
 [node name="play" type="Button" parent="." unique_id=1865689507]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_6pj40")
 offset_left = 450.0
 offset_top = 198.0
 offset_right = 579.0
 offset_bottom = 325.5
 scale = Vector2(2, 2)
 size_flags_stretch_ratio = 0.0
-icon = ExtResource("7_kait0")
+icon = ExtResource("6_uui5l")
 flat = true
 autowrap_mode = 3
 autowrap_trim_flags = 0
