@@ -20,12 +20,18 @@ extends CharacterBody2D
 @export var current_friction = friction
 @export var friction_modifier = 0
 
-@export var health = 100
+signal health_changed(new_health: float)
+@export var health : float = 100.0:
+	set(value):
+		health = value
+		print("health changed")
+		health_changed.emit(health)
 
 @export var state = PlayerState.IDLE
 @export var on_floor = false
 @export var on_ceiling = false
 @export var stuck_to_ceiling = false
+@export var spawn_position = null
 
 signal StateChanged
 enum PlayerState {
@@ -84,6 +90,7 @@ func get_tile_type(layer: TileMapLayer, world_pos: Vector2) -> String:
 	return value if value is String else ""
 
 func _ready():
+	spawn_position = self.global_position
 	StateChanged.connect(on_state_change)
 
 func _physics_process(delta: float):
@@ -173,5 +180,7 @@ func _physics_process(delta: float):
 							side_friction = 0.5
 				"hurt":
 					friction_modifier = -0.5
+					if health > 0:
+						health -= 0.3
 	
 	evaulateState()
