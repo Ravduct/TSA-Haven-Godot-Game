@@ -24,14 +24,25 @@ signal health_changed(new_health: float)
 @export var health : float = 100.0:
 	set(value):
 		health = value
-		print("health changed")
 		health_changed.emit(health)
 
 @export var state = PlayerState.IDLE
 @export var on_floor = false
+## The type of tile the player is currently on so health bar can check if the player is on a hurt tile
+@export var tile_type = TileType.NONE
 @export var on_ceiling = false
 @export var stuck_to_ceiling = false
 @export var spawn_position = null
+
+signal TileChanged(tile_type: TileType)
+enum TileType {
+	NONE,
+	BOUNCY,
+	EXTRABOUNCY,
+	ICE,
+	STICKY,
+	HURT
+}
 
 signal StateChanged
 enum PlayerState {
@@ -78,6 +89,11 @@ func evaulateState():
 	
 	if state != last:
 		StateChanged.emit(state)
+
+func evaluateTileType():
+	var last = tile_type
+	if tile_type != last:
+		TileChanged.emit(tile_type)
 
 func get_tile_type(layer: TileMapLayer, world_pos: Vector2) -> String:
 	if layer.tile_set == null or not layer.tile_set.has_custom_data_layer_by_name("type"):
@@ -128,7 +144,6 @@ func _physics_process(delta: float):
 	move_and_slide()
 	
 	if velocity.x != 0: $hitbox/sprite.flip_h = velocity.x > 0
-	
 	on_floor = false
 	on_ceiling = false
 	stuck_to_ceiling = false
@@ -151,26 +166,29 @@ func _physics_process(delta: float):
 				on_ceiling = true
 			else:
 				hori = true
-		
 		if collider is TileMapLayer:
 			var tile = get_tile_type(collider, collision.get_position() - normal * 2)
 			match tile:
 				"bouncy":
+					tile_type = TileType.BOUNCY # update tile type to enum
 					var bounce = 0.1 if Input.is_action_pressed("down") else 0.5
 					if hori:
 						velocity.x = -last_v.x * bounce
 					else:
 						if abs(last_v.y) > 100: velocity.y = -last_v.y * bounce
 				"extrabouncy":
+					tile_type = TileType.EXTRABOUNCY
 					var bounce = 0.1 if Input.is_action_pressed("down") else 0.65
 					if hori:
 						velocity.x = -last_v.x * bounce
 					else:
 						if abs(last_v.y) > 100: velocity.y = -last_v.y * bounce
 				"ice":
+					tile_type = TileType.ICE
 					friction_modifier = 0.99
 					speed_modifier = -1000
 				"sticky":
+					tile_type = TileType.STICKY
 					speed_modifier = -100
 					jump_power_modifier = -700
 					if !on_floor: 
@@ -179,8 +197,10 @@ func _physics_process(delta: float):
 						if hori:
 							side_friction = 0.5
 				"hurt":
+					tile_type = TileType.HURT
 					friction_modifier = -0.5
-					if health > 0:
-						health -= 0.3
-	
+				_:
+					tile_type = TileType.NONE
+
+	evaluateTileType()
 	evaulateState()
