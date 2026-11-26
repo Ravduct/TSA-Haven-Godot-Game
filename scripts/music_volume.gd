@@ -4,7 +4,7 @@ var music_volume
 
 func _ready():
     var slider = get_node("volumeSlide")
-    music_volume = owner.get_node("Camera2D").get_node("menu music").volume_db
+    music_volume = AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music"))
     output = get_node("volumeNum")
 
     slider.value_changed.connect(change_value)
@@ -12,8 +12,7 @@ func _ready():
 func change_value(value: float):
     music_volume = value
 
-    var music_player = owner.get_node("Camera2D").get_node("menu music")
-    music_player.volume_db = music_volume
+    AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), music_volume)
 
     output.bbcode_enabled = true
     output.text = "[center]" + str(value) + "[/center]"
