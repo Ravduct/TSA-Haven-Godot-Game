@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://gjrqn0h5stmd" path="res://image assets/jelly planet better.png" id="2_gjjcl"]
 [ext_resource type="Texture2D" uid="uid://cqm2kvhaverhr" path="res://image assets/space bg EVEN BETTER.png" id="3_6pj40"]
 [ext_resource type="Script" uid="uid://ct44nowtflopa" path="res://scenes/more variation bg.gd" id="3_kait0"]
-[ext_resource type="AudioStream" uid="uid://cpa4hscpeskej" path="res://audio/planet_menu.mp3" id="4_85riq"]
 [ext_resource type="Texture2D" uid="uid://b4lwj0hcwkwvy" path="res://image assets/settings.png" id="5_4hago"]
 [ext_resource type="Shader" uid="uid://cjpxjfloo6u3y" path="res://scenes/planet glow.gdshader" id="5_fsdjo"]
 [ext_resource type="Script" uid="uid://cs6c358iiq2ou" path="res://scripts/settings_in.gd" id="5_gjjcl"]
@@ -17,6 +16,7 @@
 [ext_resource type="Script" uid="uid://f8vfmpa3uhga" path="res://scripts/back_button.gd" id="10_4hago"]
 [ext_resource type="Script" uid="uid://cu4yvmr8d2hwq" path="res://scripts/sfx_volume.gd" id="13_gjjcl"]
 [ext_resource type="Script" uid="uid://bs1kq36lhjwgt" path="res://scripts/music_volume.gd" id="14_kait0"]
+[ext_resource type="Script" uid="uid://bac6d0do3gipk" path="res://scenes/mainMenuCamera.gd" id="15_fsdjo"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4kxuq"]
 shader = ExtResource("1_gjjcl")
@@ -240,6 +240,7 @@ script = ExtResource("10_4hago")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1863579707]
 position = Vector2(576, 324)
+script = ExtResource("15_fsdjo")
 
 [node name="menu music" type="AudioStreamPlayer2D" parent="Camera2D" unique_id=866986728]
 position = Vector2(-441, -525)

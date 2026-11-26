@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://05cjtwa7fklp" path="res://scripts/checkpoint_saved.gd" id="6_7agi7"]
 [ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
 [ext_resource type="Texture2D" uid="uid://wibq1wb3nhyr" path="res://image assets/1.png" id="7_535f6"]
-[ext_resource type="Script" uid="uid://nfy3p0xeur5x" path="res://scenes/health_bar.gd" id="7_mc3ye"]
+[ext_resource type="Script" uid="uid://nfy3p0xeur5x" path="res://scripts/health_bar.gd" id="7_mc3ye"]
 [ext_resource type="Texture2D" uid="uid://cmudujqu4q2h4" path="res://image assets/2.png" id="8_50fbu"]
 [ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_olg7q"]
 [ext_resource type="Texture2D" uid="uid://glkyw1imh13t" path="res://image assets/3.png" id="9_0fmhk"]
