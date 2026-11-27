@@ -1,17 +1,18 @@
 [gd_scene format=4 uid="uid://curlaob3cq6jt"]
 
+[ext_resource type="Script" uid="uid://bthujpgbobrwd" path="res://scripts/player_movement.gd" id="2_hv3ux"]
 [ext_resource type="Texture2D" uid="uid://lhdym8a0bchm" path="res://image assets/bubble.png" id="2_ppgk2"]
 [ext_resource type="Script" uid="uid://cnkkprdp20kih" path="res://scripts/slime.gd" id="2_w8frs"]
 [ext_resource type="AudioStream" uid="uid://bjix07p152xu" path="res://audio/boing3.wav" id="3_50fbu"]
 [ext_resource type="Script" uid="uid://di4ii2kjsfge1" path="res://scripts/follow.gd" id="3_64w2a"]
 [ext_resource type="Texture2D" uid="uid://8vhv8h576xaj" path="res://image assets/norm.png" id="3_mx8sn"]
 [ext_resource type="Texture2D" uid="uid://ceah7yejsmjvs" path="res://image assets/sdtro.png" id="3_ok3ci"]
-[ext_resource type="Script" uid="uid://j56dwcee0gan" path="res://scripts/player.gd" id="3_ppgk2"]
 [ext_resource type="Script" uid="uid://dohb47d6se5v6" path="res://scripts/moving platform.gd" id="4_fpun6"]
 [ext_resource type="Script" uid="uid://bn2fe2d7qykeg" path="res://scripts/enemy area.gd" id="4_mx8sn"]
 [ext_resource type="Script" uid="uid://05cjtwa7fklp" path="res://scripts/checkpoint_saved.gd" id="6_7agi7"]
 [ext_resource type="Script" uid="uid://imihq74qeyi7" path="res://scripts/green area.gd" id="7_8c41q"]
 [ext_resource type="Texture2D" uid="uid://wibq1wb3nhyr" path="res://image assets/1.png" id="7_535f6"]
+[ext_resource type="Script" uid="uid://nfy3p0xeur5x" path="res://scripts/health_bar.gd" id="7_j4eoh"]
 [ext_resource type="Texture2D" uid="uid://cmudujqu4q2h4" path="res://image assets/2.png" id="8_50fbu"]
 [ext_resource type="Script" uid="uid://cyeiisfgpgo4w" path="res://scripts/green_slime.gd" id="8_olg7q"]
 [ext_resource type="Texture2D" uid="uid://glkyw1imh13t" path="res://image assets/3.png" id="9_0fmhk"]
@@ -992,9 +993,7 @@ scroll_offset = Vector2(33, 0)
 
 [node name="player" type="CharacterBody2D" parent="." unique_id=1600145561]
 position = Vector2(-4473, 855)
-script = ExtResource("3_ppgk2")
-speed = null
-friction = null
+script = ExtResource("2_hv3ux")
 
 [node name="hitbox" type="CollisionShape2D" parent="player" unique_id=30282243]
 material = SubResource("CanvasItemMaterial_wtcfe")
@@ -1041,6 +1040,23 @@ horizontal_alignment = 1
 script = ExtResource("6_7agi7")
 
 [node name="Timer" type="Timer" parent="CanvasLayer/checkpointSaved" unique_id=1530303998]
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=1695704059]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="healthBar" type="ProgressBar" parent="CanvasLayer/Control" unique_id=1771884718]
+custom_minimum_size = Vector2(200, 24)
+layout_mode = 0
+offset_left = 474.0
+offset_top = 83.0
+offset_right = 674.0
+offset_bottom = 110.0
+script = ExtResource("7_j4eoh")
 
 [node name="deathScreen" type="ColorRect" parent="CanvasLayer" unique_id=581324628]
 visible = false
