@@ -8,8 +8,8 @@ func _ready():
 
 #
 func on_pressed():
-	var camera := get_node("/root/Node2D/Camera2D")
-	var cameraNode := get_node("/root/Node2D/Settings/background/cameraNode")
+	var camera := get_node("/root/menu/Camera2D")
+	var cameraNode := get_node("/root/menu/Settings/background/cameraNode")
 	
 	var tween := create_tween()
 	

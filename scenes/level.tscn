@@ -994,21 +994,7 @@ scroll_offset = Vector2(33, 0)
 position = Vector2(-4473, 855)
 script = ExtResource("3_ppgk2")
 speed = null
-sprint = null
-air_speed = null
-speed_modifier = null
-jump_power = null
-jump_power_modifier = null
-gravity_modifier = null
 friction = null
-air_friction = null
-side_friction = null
-friction_modifier = null
-health = null
-state = null
-on_floor = null
-on_ceiling = null
-stuck_to_ceiling = null
 
 [node name="hitbox" type="CollisionShape2D" parent="player" unique_id=30282243]
 material = SubResource("CanvasItemMaterial_wtcfe")
@@ -1039,6 +1025,7 @@ position = Vector2(-4473, 855)
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=770117665]
 stream = ExtResource("26_xy2fk")
 autoplay = true
+bus = &"SFX"
 parameters/looping = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1836531972]
@@ -1154,12 +1141,15 @@ sprite_frames = SubResource("SpriteFrames_bkp3o")
 
 [node name="Bite1" type="AudioStreamPlayer" parent="level/checkpoint2" unique_id=1689110431]
 stream = ExtResource("27_cr74b")
+bus = &"SFX"
 
 [node name="Bite2" type="AudioStreamPlayer" parent="level/checkpoint2" unique_id=1144411436]
 stream = ExtResource("28_uhfbm")
+bus = &"SFX"
 
 [node name="Bite3" type="AudioStreamPlayer" parent="level/checkpoint2" unique_id=2071217790]
 stream = ExtResource("29_lqb7q")
+bus = &"SFX"
 
 [node name="checkpoint" type="Area2D" parent="level" unique_id=308182329]
 position = Vector2(5646, 225)
@@ -1176,12 +1166,15 @@ sprite_frames = SubResource("SpriteFrames_bkp3o")
 
 [node name="Bite1" type="AudioStreamPlayer" parent="level/checkpoint" unique_id=1364042757]
 stream = ExtResource("27_cr74b")
+bus = &"SFX"
 
 [node name="Bite2" type="AudioStreamPlayer" parent="level/checkpoint" unique_id=444881457]
 stream = ExtResource("28_uhfbm")
+bus = &"SFX"
 
 [node name="Bite3" type="AudioStreamPlayer" parent="level/checkpoint" unique_id=1915660182]
 stream = ExtResource("29_lqb7q")
+bus = &"SFX"
 
 [node name="yellow" type="Area2D" parent="level" unique_id=1144792476]
 position = Vector2(-298, 825)
