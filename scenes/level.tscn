@@ -46,7 +46,7 @@
 [ext_resource type="AudioStream" uid="uid://d22w8v0npbgjv" path="res://audio/bite3.wav" id="29_lqb7q"]
 [ext_resource type="Script" uid="uid://dgx2pevttqkki" path="res://scripts/win.gd" id="45_ok3ci"]
 [ext_resource type="Texture2D" uid="uid://d0tcfa3okx38w" path="res://image assets/2026_11_14_0tt_Kleki.png" id="45_uhfbm"]
-[ext_resource type="Texture2D" path="res://image assets/ground_tiles_dark.png" id="47_hv3ux"]
+[ext_resource type="Texture2D" uid="uid://c2yx4e1aktd3" path="res://image assets/ground_tiles_dark.png" id="47_hv3ux"]
 [ext_resource type="Texture2D" uid="uid://5oxnie65qaod" path="res://image assets/ground_tiles.png" id="48_j4eoh"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wtcfe"]

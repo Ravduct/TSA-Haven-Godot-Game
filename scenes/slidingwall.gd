@@ -3,6 +3,9 @@ extends AnimatableBody2D
 @export var slideDistance: float = 0.0
 @export var slideTime: float = 0.8
 @export var startDown: bool = false
+@export var flagName: String = ""
+@export var animateOnLoad: bool = true
+@export var openDelay: float = 0.8
 
 var upPosition: Vector2
 var downPosition: Vector2
@@ -16,6 +19,30 @@ func _ready():
 	downPosition = position + Vector2(0.0, distance)
 	if startDown:
 		position = downPosition
+
+	if flagName == "":
+		return
+	var state := get_node_or_null("/root/GameState")
+	if state == null:
+		push_warning("WALL: no GameState autoload found, so the flag '" + flagName + "' can't be read.")
+		return
+	state.flagChanged.connect(onFlagChanged)
+	if state.getFlag(flagName):
+		var seenKey: String = flagName + "_seen"
+		if animateOnLoad and not state.getFlag(seenKey):
+			state.setFlag(seenKey, true)
+			await get_tree().create_timer(openDelay).timeout
+			onButton(true)
+		else:
+			snapTo(true)
+
+func snapTo(active: bool) -> void:
+	var goDown: bool = active != startDown
+	position = downPosition if goDown else upPosition
+
+func onFlagChanged(changedName: String, value: bool) -> void:
+	if changedName == flagName:
+		onButton(value)
 
 func wallHeight() -> float:
 	var shapes := find_children("*", "CollisionShape2D", true, false)

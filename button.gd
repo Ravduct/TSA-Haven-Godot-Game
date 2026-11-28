@@ -4,21 +4,33 @@ signal pressed
 signal released
 
 @export var targets: Array[Node] = []
-@export var pressDepth: float = 40.0
-@export var pressTime: float = 0.22
-@export var releaseTime: float = 0.4
+@export var pressDepth: float = 8.0
+@export var pressTime: float = 0.12
+@export var releaseTime: float = 0.3
 @export var releaseDelay: float = 0.15
-@export var latch: bool = true
+@export var latch: bool = false
+@export var flagName: String = ""
 
-@onready var top: AnimatableBody2D = $Top
-@onready var trigger: Area2D = $Top/Trigger
-
+var top: AnimatableBody2D
+var trigger: Area2D
 var restY: float = 0.0
 var isPressed: bool = false
 var bodiesOn: int = 0
 var tween: Tween
 
 func _ready():
+	var bodies := find_children("*", "AnimatableBody2D", true, false)
+	if bodies.is_empty():
+		push_error("BUTTON: no AnimatableBody2D found under " + str(get_path()) + ". Add one for the moving top.")
+		return
+	top = bodies[0] as AnimatableBody2D
+
+	var areas := top.find_children("*", "Area2D", true, false)
+	if areas.is_empty():
+		push_error("BUTTON: no Area2D found under the top. Add a trigger Area2D as a child of the AnimatableBody2D.")
+		return
+	trigger = areas[0] as Area2D
+
 	restY = top.position.y
 	trigger.body_entered.connect(onEnter)
 	trigger.body_exited.connect(onExit)
@@ -54,6 +66,10 @@ func setPressed(value: bool) -> void:
 	for target in targets:
 		if is_instance_valid(target) and target.has_method("onButton"):
 			target.onButton(isPressed)
+	if flagName != "":
+		var state := get_node_or_null("/root/GameState")
+		if state != null:
+			state.setFlag(flagName, isPressed)
 
 func moveTop() -> void:
 	if tween != null and tween.is_valid():

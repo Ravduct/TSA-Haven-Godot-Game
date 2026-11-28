@@ -4,21 +4,23 @@ extends CharacterBody2D
 @export var sprint = 200
 @export var air_speed = 10
 @export var current_speed = speed
-@export var speed_modifier = 0
 
 @export var jump_power = 700
 @export var current_jump_power = jump_power
-@export var jump_power_modifier = 0
 
 @export var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 @export var current_gravity = gravity
-@export var gravity_modifier = 0
 
-@export var friction = 0.8
-@export var air_friction = 0.99
 @export var side_friction = 1
 @export var current_friction = friction
-@export var friction_modifier = 0
+
+@export var friction: float = 0.8
+@export var air_friction: float = 0.99
+
+var friction_modifier: float = 0.0
+var speed_modifier: float = 0.0
+var jump_power_modifier: float = 0.0
+var gravity_modifier: float = 0.0
 
 @export var health = 100
 

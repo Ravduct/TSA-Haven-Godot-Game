@@ -23,12 +23,14 @@ texture = ExtResource("2_lt4la")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Top" unique_id=2113133282]
 position = Vector2(0, 46.5)
 shape = SubResource("RectangleShape2D_4kxuq")
+debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="Trigger" type="Area2D" parent="Top" unique_id=1427414068]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Top/Trigger" unique_id=463492701]
 position = Vector2(0, 20)
 shape = SubResource("RectangleShape2D_mti6b")
+debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="Base" type="Sprite2D" parent="." unique_id=941000459]
 position = Vector2(0, 52.5)
